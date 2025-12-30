@@ -1,0 +1,150 @@
+# OpenTelemetry Collector 設定
+# 
+# 第8章 8.5.3: OpenTelemetry Collector経由の複数バックエンド配信
+#
+# MLflowからのトレースを受信し、複数のバックエンドに配信します。
+# 
+# 使用方法:
+#   docker run -v $(pwd)/otel-collector-config.yaml:/etc/otelcol/config.yaml \
+#     otel/opentelemetry-collector-contrib:latest
+#
+# または Kubernetes:
+#   kubectl apply -f otel-collector-deployment.yaml
+
+# ============================================================
+# Receivers: トレースの受信
+# ============================================================
+receivers:
+  # OTLP receiver (gRPC and HTTP)
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+# ============================================================
+# Processors: データの処理
+# ============================================================
+processors:
+  # バッチ処理: パフォーマンス最適化
+  batch:
+    timeout: 5s
+    send_batch_size: 100
+    send_batch_max_size: 200
+  
+  # メモリ制限: OOMを防止
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+    spike_limit_mib: 128
+  
+  # リソース検出: 環境情報を自動付与
+  resourcedetection:
+    detectors:
+      - env
+      - system
+    timeout: 5s
+  
+  # 属性追加: 共通のタグを追加
+  attributes:
+    actions:
+      - key: deployment.environment
+        value: production
+        action: upsert
+      - key: service.namespace
+        value: llm-apps
+        action: upsert
+
+# ============================================================
+# Exporters: バックエンドへの送信
+# ============================================================
+exporters:
+  # デバッグ出力 (開発用)
+  debug:
+    verbosity: detailed
+  
+  # Datadog
+  datadog:
+    api:
+      key: ${env:DD_API_KEY}
+      site: datadoghq.com
+    traces:
+      span_name_as_resource_name: true
+  
+  # Grafana Tempo (OTLP)
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+  
+  # Jaeger
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  
+  # Prometheus (メトリクス用)
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    namespace: llm_app
+    resource_to_telemetry_conversion:
+      enabled: true
+
+# ============================================================
+# Extensions: 拡張機能
+# ============================================================
+extensions:
+  # ヘルスチェック
+  health_check:
+    endpoint: 0.0.0.0:13133
+  
+  # pprof (デバッグ用)
+  pprof:
+    endpoint: 0.0.0.0:1777
+  
+  # zpages (内部メトリクス)
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+# ============================================================
+# Service: パイプライン定義
+# ============================================================
+service:
+  extensions:
+    - health_check
+    - pprof
+    - zpages
+  
+  pipelines:
+    # トレースパイプライン
+    traces:
+      receivers:
+        - otlp
+      processors:
+        - memory_limiter
+        - resourcedetection
+        - attributes
+        - batch
+      exporters:
+        - debug
+        - datadog
+        - otlp/tempo
+        # - otlp/jaeger  # 必要に応じて有効化
+    
+    # メトリクスパイプライン (トレースから生成されたメトリクス用)
+    metrics:
+      receivers:
+        - otlp
+      processors:
+        - memory_limiter
+        - batch
+      exporters:
+        - prometheus
+  
+  # テレメトリ設定
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      address: 0.0.0.0:8888
