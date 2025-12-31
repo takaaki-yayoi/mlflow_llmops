@@ -249,7 +249,7 @@ print("MLflow UIのトレース詳細 → Assessmentsタブで確認できます
 # MAGIC %md
 # MAGIC ## 6. スコアラーの登録・開始
 # MAGIC 
-# MAGIC 本文 8.3.5 に対応
+# MAGIC 本文 8.3.4 に対応
 
 # COMMAND ----------
 
@@ -279,7 +279,7 @@ print("スコアラー登録完了")
 # MAGIC %md
 # MAGIC ## 7. 登録済みスコアラーの確認
 # MAGIC 
-# MAGIC 本文 8.3.5 に対応
+# MAGIC 本文 8.3.4 に対応
 
 # COMMAND ----------
 
