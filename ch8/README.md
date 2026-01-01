@@ -1,47 +1,70 @@
-# 第8章 監視と運用 - サンプルコード
+# 第8章 監視と運用 - サンプルノートブック
 
-## 概要
+第8章で解説している監視・運用機能の実践的なサンプルコードです。
 
-`chapter8_quickstart.py` は、第8章で解説した監視・運用機能の動作を一通り確認できるDatabricksノートブックです。
+## ファイル構成
+
+| ファイル | 説明 |
+|---------|------|
+| `chapter8_samples.py` | サンプルノートブック (Databricks notebook形式) |
 
 ## 前提条件
 
-- Databricks Runtime 15.0 ML以上
-- MLflow 3.1以上(ノートブック内で自動インストール)
-- OpenAI APIキーがDatabricksシークレットに設定済み
+- Databricks Runtime 15.4 LTS ML以降
+- MLflow 3.x (Databricks Runtime MLに含まれる)
+- Unity Catalog対応ワークスペース
+- OpenAI APIキー (コスト分析以外の機能で必要)
 
-## セットアップ時の注意
+## 使用方法
 
-**エクスペリメント名について:** エクスペリメント名はノートブック名と異なる名前にしてください。同じ名前にするとノートブックエクスペリメントとして扱われ、管理がわかりにくくなります。
+1. Databricksワークスペースにノートブックをインポート
+2. 冒頭の設定変数を自環境に合わせて変更:
+   ```python
+   CATALOG = "my_catalog"
+   SCHEMA = "my_schema"
+   TRACE_TABLE = "archived_traces"
+   SERVICE_NAME = "chapter8-demo"
+   ```
+3. 各セルを順番に実行
 
-```python
-# 良い例: ノートブック名(chapter8_quickstart)と異なる名前
-experiment_path = "/Shared/experiments/chapter8-monitoring"
+## ノートブック構成
 
-# 避けるべき例: ノートブック名と同じ
-experiment_path = "/Shared/chapter8_quickstart"  # ノートブックエクスペリメントになる
-```
+| セクション | 本文参照 | 内容 |
+|-----------|---------|------|
+| 1. セットアップ | - | 環境設定とエクスペリメント作成 |
+| 2.1 効果的なスパン設計 | 8.1.2 | RAGパイプラインのスパン設計例 |
+| 2.2 メタデータ追加 | 8.1.6 | トレースへのタグ・属性追加 |
+| 2.3 Delta Tableアーカイブ | 8.1.5 | enable_databricks_trace_archival |
+| 3.1 トークン使用量確認 | 8.2.2 | trace.info.token_usage |
+| 3.2 コスト計算 | 8.2.3 | calculate_cost関数 |
+| 3.3 SQLコスト分析 | 8.2.4 | 日次/モデル別/ユーザー別/異常検出 |
+| 4.1 フィードバック記録 | 8.3.3 | mlflow.log_feedback |
+| 4.2 スコアラー登録 | 8.3.4 | Safety, Guidelines |
+| 4.3 スコアラー確認 | 8.3.4 | list_scorers |
+| 5. クリーンアップ | - | スコアラー削除、アーカイブ停止 |
 
-## 確認できる機能
+## SQLコスト分析クエリ
 
-| セクション | 本文の対応箇所 | 機能 |
-|-----------|---------------|------|
-| 2 | 8.1.2 効果的なトレース設計の指針 | SpanType、属性記録、エラーコンテキスト |
-| 3 | 8.2.2 トークン使用量の自動追跡 | LLM呼び出し(自動トレーシング) |
-| 4 | 8.2.2 トークン使用量の自動追跡 | トークン使用量の確認 |
-| 4.1 | 8.2.3 コスト計算の実装 | コスト計算 |
-| 5 | 8.3.3 ユーザーフィードバックの収集 | フィードバックの記録 |
-| 6 | 8.3.4 LLM-as-a-Judgeによる自動評価 | リアルタイムスコアラーの登録・開始 |
-| 7 | 8.3.4 LLM-as-a-Judgeによる自動評価 | 登録済みスコアラーの確認 |
+セクション3.3では以下のSQLクエリを提供しています:
 
-## 使い方
+| クエリ | 説明 |
+|-------|------|
+| 日次コストサマリー | 過去30日間の日次コスト集計 |
+| モデル別コスト内訳 | モデルごとのコスト割合 |
+| ユーザー別コストTop 10 | コスト上位ユーザー |
+| 時間帯別コスト分析 | ピーク時間帯の特定 |
+| コスト異常検出 | 平均+3標準偏差での異常検出 |
 
-1. `chapter8_quickstart.py` をDatabricksワークスペースにインポート
-2. OpenAI APIキーをシークレットに設定
-3. エクスペリメントパスを環境に合わせて変更
-4. 上から順にセルを実行
+**注意**: これらのクエリはDelta Tableへのアーカイブが有効になっている必要があります。
 
 ## 注意事項
 
-- スコアラー機能(セクション6, 7)は`databricks-agents`パッケージが必要(自動インストール)
-- 料金は2025年12月時点の参考値です
+- **料金情報**: 記載の料金は2024年12月時点の参考値です。最新の公式料金を確認してください
+- **スコアラー**: 実際のLLM呼び出しが必要な機能です
+- **アーカイブ**: 約15分間隔でトレースが同期されます
+
+## 関連ドキュメント
+
+- [MLflow Tracing](https://mlflow.org/docs/latest/genai/tracing/)
+- [Production Monitoring](https://docs.databricks.com/aws/ja/mlflow3/genai/eval-monitor/production-monitoring)
+- [Tracing FAQ](https://docs.databricks.com/gcp/en/mlflow3/genai/tracing/faq)
