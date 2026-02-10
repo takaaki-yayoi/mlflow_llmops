@@ -1,0 +1,46 @@
+# AI Gateway A/Bテスト設定（7.4.4節）
+#
+# GPT-4o-miniからGPT-4.1への移行を検討する際に、
+# トラフィック分割でA/Bテストを実施する設定例です。
+#
+# 注: 6章のプロンプトA/Bテスト（プロンプトレジストリのエイリアス切替）とは
+# 異なるレイヤーで動作します。
+#   - プロンプトの改善 → 6章のプロンプトレジストリで管理
+#   - モデルの比較     → 7章のAI Gatewayで管理
+
+endpoints:
+  - name: qa-agent-llm-current
+    endpoint_type: llm/v1/chat
+    model:
+      provider: openai
+      name: gpt-4o-mini
+      config:
+        openai_api_key: $OPENAI_API_KEY
+
+  - name: qa-agent-llm-candidate
+    endpoint_type: llm/v1/chat
+    model:
+      provider: openai
+      name: gpt-4.1
+      config:
+        openai_api_key: $OPENAI_API_KEY
+
+  # Embedding（A/Bテスト対象外）
+  - name: qa-agent-embedding
+    endpoint_type: llm/v1/embeddings
+    model:
+      provider: openai
+      name: text-embedding-3-small
+      config:
+        openai_api_key: $OPENAI_API_KEY
+
+# トラフィック分割ルーティング
+routes:
+  - name: qa-agent-llm
+    task_type: llm/v1/chat
+    destinations:
+      - name: qa-agent-llm-current
+        traffic_percentage: 80
+      - name: qa-agent-llm-candidate
+        traffic_percentage: 20
+    routing_strategy: TRAFFIC_SPLIT

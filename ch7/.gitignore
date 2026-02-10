@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+
+# 環境
+.env
+.venv/
+
+# データ
+data/
+
+# MLflow生成ファイル
+mlflow.db
+mlartifacts/
+
+# Scrapy
+.scrapy_cache/
+
+# uv
+uv.lock

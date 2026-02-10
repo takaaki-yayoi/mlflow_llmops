@@ -1,0 +1,71 @@
+# QAエージェント Kubernetes Deployment（7.5.3節）
+#
+# 使用方法:
+#   kubectl apply -f deploy/k8s/deployment.yaml
+#   kubectl apply -f deploy/k8s/service.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qa-agent
+  labels:
+    app: qa-agent
+    chapter: "7"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: qa-agent
+  template:
+    metadata:
+      labels:
+        app: qa-agent
+    spec:
+      containers:
+        - name: qa-agent
+          image: qa-agent-server:latest
+          ports:
+            - containerPort: 8080
+          env:
+            # APIキー（Kubernetes Secretから取得）
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llm-api-keys
+                  key: openai-api-key
+            - name: EXA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llm-api-keys
+                  key: exa-api-key
+            # MLflow設定
+            - name: MLFLOW_TRACKING_URI
+              value: "http://mlflow-server:5000"
+            # 本番トレーシング設定（8章の監視で活用）
+            - name: MLFLOW_ENABLE_ASYNC_TRACE_LOGGING
+              value: "true"
+            - name: OTEL_SERVICE_NAME
+              value: "qa-agent-production"
+            # モデル設定
+            - name: LLM_MODEL
+              value: "gpt-4o-mini"
+            - name: EMBEDDING_MODEL
+              value: "text-embedding-3-small"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30

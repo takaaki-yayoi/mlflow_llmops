@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mlflow-sample-serving"
+version = "0.1.0"
+description = "MLflowサンプルエージェント - サービング（第7章）"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    # MLflow（サービング用追加機能を含む）
+    "mlflow[genai]>=3.9.0",
+    # LangGraph / LangChain
+    "langgraph>=1.0.0",
+    "langchain>=1.0.0",
+    "langchain-openai>=1.0.0",
+    "langchain-community>=0.3.0",
+    # ベクトルストア
+    "langchain-milvus>=0.2.0",
+    "milvus-lite>=2.4.0",
+    "setuptools<75",  # pkg_resourcesが必要（milvus-lite依存）
+    # ツール
+    "exa-py>=1.0.0",
+    # Agent Server
+    "uvicorn>=0.30.0",
+    "fastapi>=0.110.0",
+    # ユーティリティ
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+    # データ取り込み
+    "html2text>=2024.0.0",
+    "scrapy>=2.11.0",
+    "tiktoken>=0.7.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["agents", "serving", "scripts"]

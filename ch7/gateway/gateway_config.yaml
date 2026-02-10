@@ -1,0 +1,41 @@
+# AI Gateway設定（7.4節）
+#
+# QAエージェントが使用するLLMとEmbeddingエンドポイントを
+# AI Gateway経由で管理します。
+#
+# 起動方法:
+#   mlflow gateway start --config-path gateway/gateway_config.yaml --port 5010
+
+endpoints:
+  # QAエージェントのLLMバックエンド
+  - name: qa-agent-llm
+    endpoint_type: llm/v1/chat
+    model:
+      provider: openai
+      name: gpt-4o-mini
+      config:
+        openai_api_key: $OPENAI_API_KEY
+    limit:
+      renewal_period: minute
+      calls: 100
+
+  # Embedding用エンドポイント（Milvusへの格納・検索時に使用）
+  - name: qa-agent-embedding
+    endpoint_type: llm/v1/embeddings
+    model:
+      provider: openai
+      name: text-embedding-3-small
+      config:
+        openai_api_key: $OPENAI_API_KEY
+
+  # フォールバック用のバックアップLLM（利用する場合はコメントを解除してください）
+  # - name: qa-agent-llm-backup
+  #   endpoint_type: llm/v1/chat
+  #   model:
+  #     provider: anthropic
+  #     name: claude-sonnet-4-20250514
+  #     config:
+  #       anthropic_api_key: $ANTHROPIC_API_KEY
+  #   limit:
+  #     renewal_period: minute
+  #     calls: 50
