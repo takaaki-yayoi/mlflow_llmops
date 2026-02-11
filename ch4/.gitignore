@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# Data
+data/
+
+# Others
+.agent/
+.mlflow/
+.scrapy_cache/

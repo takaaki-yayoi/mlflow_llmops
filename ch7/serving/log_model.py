@@ -45,7 +45,8 @@ def log_agent():
         # models-from-codeパターンでエージェントを記録
         model_info = mlflow.langchain.log_model(
             lc_model=MODEL_CODE_PATH,
-            name="qa-agent",
+            name="qa-agent",                                # アーティファクト名
+            registered_model_name=REGISTERED_MODEL_NAME,    # レジストリに自動登録
         )
 
         # メタデータをタグとして記録
@@ -61,42 +62,31 @@ def log_agent():
         print(f"モデルを記録しました:")
         print(f"  Run ID: {run.info.run_id}")
         print(f"  Model URI: {model_info.model_uri}")
+        print(f"  Registered Model: {REGISTERED_MODEL_NAME}")
 
         return model_info, run
 
 
-def register_model(model_info, run):
-    """記録したモデルをレジストリに登録し、championエイリアスを設定する。
+def set_champion_alias(model_info):
+    """log_model()で自動登録されたモデルにchampionエイリアスを設定する。
 
     Args:
         model_info: mlflow.langchain.log_model()の戻り値
-        run: MLflow Runオブジェクト
     """
     client = MlflowClient(tracking_uri=TRACKING_URI)
 
-    # モデルレジストリに登録（存在しない場合は作成）
-    try:
-        client.create_registered_model(REGISTERED_MODEL_NAME)
-        print(f"登録済みモデル '{REGISTERED_MODEL_NAME}' を作成しました")
-    except mlflow.exceptions.MlflowException:
-        print(f"登録済みモデル '{REGISTERED_MODEL_NAME}' は既に存在します")
+    # log_model(registered_model_name=...)で自動登録されたバージョンを取得
+    model_version = model_info.registered_model_version
 
-    model_version = client.create_model_version(
-        name=REGISTERED_MODEL_NAME,
-        source=model_info.model_uri,
-        run_id=run.info.run_id,
-    )
-
-    # championエイリアスを設定
     client.set_registered_model_alias(
         name=REGISTERED_MODEL_NAME,
         alias="champion",
-        version=model_version.version,
+        version=model_version,
     )
 
-    print(f"モデルを登録しました:")
+    print(f"championエイリアスを設定しました:")
     print(f"  名前: {REGISTERED_MODEL_NAME}")
-    print(f"  バージョン: {model_version.version}")
+    print(f"  バージョン: {model_version}")
     print(f"  エイリアス: champion")
 
 
@@ -136,11 +126,11 @@ def main():
     print("QAエージェントのモデル記録（第7章）")
     print("=" * 50)
 
-    # 1. エージェントをMLflowに記録
+    # 1. エージェントをMLflowに記録・レジストリに自動登録
     model_info, run = log_agent()
 
-    # 2. モデルレジストリに登録
-    register_model(model_info, run)
+    # 2. championエイリアスを設定
+    set_champion_alias(model_info)
 
     # 3. 動作確認
     verify_model()

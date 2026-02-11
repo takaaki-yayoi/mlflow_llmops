@@ -21,7 +21,7 @@ from mlflow.genai.agent_server import (
     setup_mlflow_git_based_version_tracking,
 )
 
-agent_server = AgentServer("QAAgent")
+agent_server = AgentServer("ResponsesAgent")
 app = agent_server.app
 
 # Gitコミットとトレースを紐付け（任意）
