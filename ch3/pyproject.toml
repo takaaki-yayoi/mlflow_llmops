@@ -28,7 +28,6 @@ dependencies = [
     "html2text>=2024.0.0",
     "scrapy>=2.11.0",
     "tiktoken>=0.7.0",
-    "mlflow[genai]>=3.9.0",
 ]
 
 [tool.hatch.build.targets.wheel]
