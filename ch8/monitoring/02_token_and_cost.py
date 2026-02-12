@@ -75,8 +75,9 @@ print(f"--- 合計コスト: ${total_cost:.6f} ---")
 
 # === 2. トレースを検索してコスト集計 ===
 print("\n=== コスト集計(トレース検索) ===")
+experiment = mlflow.get_experiment_by_name("ch8-monitoring-quickstart")
 traces = mlflow.search_traces(
-    experiment_names=["ch8-monitoring-quickstart"],
+    experiment_ids=[experiment.experiment_id],
     filter_string="tags.`cost.total_usd` != ''",
     max_results=100,
 )

@@ -80,16 +80,19 @@ mlflow.flush_trace_async_logging()
 # === 4. トレース検索 ===
 print("\n=== トレース検索 ===")
 
+experiment = mlflow.get_experiment_by_name("ch8-monitoring-quickstart")
+experiment_ids = [experiment.experiment_id]
+
 # 全トレースを取得
 all_traces = mlflow.search_traces(
-    experiment_names=["ch8-monitoring-quickstart"],
+    experiment_ids=experiment_ids,
     max_results=10,
 )
 print(f"総トレース数: {len(all_traces)}")
 
 # 特定ユーザーのトレースを検索
 user1_traces = mlflow.search_traces(
-    experiment_names=["ch8-monitoring-quickstart"],
+    experiment_ids=experiment_ids,
     filter_string="tags.`mlflow.trace.user` = 'user-1'",
 )
 print(f"user-1のトレース数: {len(user1_traces)}")

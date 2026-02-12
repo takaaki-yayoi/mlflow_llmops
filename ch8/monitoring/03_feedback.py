@@ -91,8 +91,9 @@ for item in questions_and_feedback:
 # === 3. フィードバック付きトレースの確認 ===
 print("=== フィードバック確認 ===\n")
 
+experiment = mlflow.get_experiment_by_name("ch8-monitoring-quickstart")
 traces = mlflow.search_traces(
-    experiment_names=["ch8-monitoring-quickstart"],
+    experiment_ids=[experiment.experiment_id],
     max_results=10,
 )
 
