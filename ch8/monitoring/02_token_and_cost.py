@@ -77,8 +77,9 @@ traces = mlflow.search_traces(
     filter_string="tags.`cost.total_usd` != ''",
     max_results=100,
 )
-if len(traces) > 0 and "tags.cost.total_usd" in traces.columns:
-    costs = traces["tags.cost.total_usd"].astype(float)
+if len(traces) > 0:
+    # tags列はdict型なので、そこからcost.total_usdを取り出す
+    costs = traces["tags"].apply(lambda t: float(t.get("cost.total_usd", 0)))
     print(f"  トレース数: {len(costs)}")
     print(f"  合計コスト: ${costs.sum():.6f}")
     print(f"  平均コスト: ${costs.mean():.6f}")
