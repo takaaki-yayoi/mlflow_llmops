@@ -9,6 +9,10 @@
   uv run python monitoring/03_feedback.py
 """
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import mlflow
 from openai import OpenAI
 from mlflow.entities import AssessmentSource, AssessmentSourceType

@@ -10,6 +10,10 @@
   uv run python monitoring/02_token_and_cost.py
 """
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import mlflow
 from openai import OpenAI
 from monitoring.cost_calculator import calculate_cost

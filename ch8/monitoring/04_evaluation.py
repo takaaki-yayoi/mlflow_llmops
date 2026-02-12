@@ -14,6 +14,10 @@
   トレースを蓄積しておいてください。
 """
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import mlflow
 from mlflow.genai.scorers import (
     Safety,

@@ -9,6 +9,10 @@
   uv run python monitoring/01_tracing_setup.py
 """
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import mlflow
 import os
 import uuid
