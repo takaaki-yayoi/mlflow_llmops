@@ -25,7 +25,7 @@ mlflow.set_experiment("MLflow QAエージェント")
 def main():
     """スコアラーをMLflowに登録する。"""
     print("=" * 60)
-    print("5.4.7節: スコアラーの登録")
+    print("5.4.6節: スコアラーの登録")
     print("=" * 60)
 
     try:
@@ -40,6 +40,7 @@ def main():
         print("  登録完了")
 
         # 登録済みスコアラーの取得テスト
+        # versionを省略すると最新バージョンを取得。特定バージョンの指定も可能: get_scorer(name="...", version=1)
         print("\n--- 登録済みスコアラーの取得テスト ---")
         loaded_scorer = mlflow.genai.get_scorer(name="has_reference_link")
         print(f"  取得成功: {loaded_scorer.name}")

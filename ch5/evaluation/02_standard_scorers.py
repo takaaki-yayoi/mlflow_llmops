@@ -88,7 +88,7 @@ def test_correctness(trace):
 def main():
     """標準スコアラーの個別テストを実行する。"""
     print("=" * 60)
-    print("5.4.5節: 標準スコアラーの個別テスト")
+    print("5.4.4節: 標準スコアラーの個別テスト")
     print("=" * 60)
 
     try:

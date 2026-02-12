@@ -62,7 +62,7 @@ def print_result(result, name: str = ""):
 def main():
     """カスタムスコアラーの個別テストを実行する。"""
     print("=" * 60)
-    print("5.4.6節: カスタムスコアラーの個別テスト")
+    print("5.4.5節: カスタムスコアラーの個別テスト")
     print("=" * 60)
 
     try:
