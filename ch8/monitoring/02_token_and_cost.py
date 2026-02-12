@@ -15,13 +15,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import mlflow
+from mlflow import MlflowClient
 from openai import OpenAI
-from monitoring.cost_calculator import calculate_cost
+from cost_calculator import calculate_cost
 
 mlflow.set_experiment("ch8-monitoring-quickstart")
 mlflow.openai.autolog()
 
 client = OpenAI()
+mlflow_client = MlflowClient()
 
 # === 1. 異なるモデルでLLM呼び出し ===
 models_and_prompts = [
@@ -55,13 +57,9 @@ for model, prompt in models_and_prompts:
     cost = calculate_cost(model, input_tokens, output_tokens)
     total_cost += cost
 
-    # コストをトレースのタグに記録(本番ではこれでSQL集計可能)
-    mlflow.update_current_trace(
-        tags={
-            "cost.total_usd": f"{cost:.6f}",
-            "cost.model": model,
-        }
-    )
+    # コストをトレースのタグに記録（完了済みトレースにはset_trace_tagを使用）
+    mlflow_client.set_trace_tag(trace_id, "cost.total_usd", f"{cost:.6f}")
+    mlflow_client.set_trace_tag(trace_id, "cost.model", model)
 
     print(f"プロンプト: {prompt[:40]}...")
     print(f"  モデル: {model}")
@@ -75,9 +73,7 @@ print(f"--- 合計コスト: ${total_cost:.6f} ---")
 
 # === 2. トレースを検索してコスト集計 ===
 print("\n=== コスト集計(トレース検索) ===")
-experiment = mlflow.get_experiment_by_name("ch8-monitoring-quickstart")
 traces = mlflow.search_traces(
-    experiment_ids=[experiment.experiment_id],
     filter_string="tags.`cost.total_usd` != ''",
     max_results=100,
 )

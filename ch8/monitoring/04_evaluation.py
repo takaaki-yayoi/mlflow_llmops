@@ -30,11 +30,7 @@ mlflow.set_experiment("ch8-monitoring-quickstart")
 # === 1. 本番トレースの取得 ===
 print("=== 本番トレースの取得 ===\n")
 
-experiment = mlflow.get_experiment_by_name("ch8-monitoring-quickstart")
-traces = mlflow.search_traces(
-    experiment_ids=[experiment.experiment_id],
-    max_results=20,
-)
+traces = mlflow.search_traces(max_results=20)
 
 print(f"評価対象トレース数: {len(traces)}")
 
