@@ -162,7 +162,7 @@ def chunk_text(text: str, url: str, title: str, max_tokens: int = 512) -> list[D
     current_tokens = 0
 
     for para in paragraphs:
-        para_tokens = len(encoding.encode(para))
+        para_tokens = len(encoding.encode(para, disallowed_special=()))
 
         # 単一の段落がmax_tokensを超える場合は文で分割
         if para_tokens > max_tokens:
@@ -174,7 +174,7 @@ def chunk_text(text: str, url: str, title: str, max_tokens: int = 512) -> list[D
             # 長い段落を文で分割
             sentences = para.split(". ")
             for sentence in sentences:
-                sentence_tokens = len(encoding.encode(sentence))
+                sentence_tokens = len(encoding.encode(sentence, disallowed_special=()))
                 if current_tokens + sentence_tokens > max_tokens:
                     if current_chunk:
                         chunks.append(". ".join(current_chunk))
@@ -249,7 +249,7 @@ def ingest_url(base_url: str, db_path: Path, chunk_size: int, max_pages: int | N
         spider_kwargs["ignore_url_patterns"] = ignore_patterns
 
     process.crawl(DocsSpider, **spider_kwargs)
-    process.start(stop_after_crawl=False)
+    process.start()
 
     # スクレイピングデータを読み込み
     try:
