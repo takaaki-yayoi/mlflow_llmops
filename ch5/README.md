@@ -7,9 +7,9 @@
 第4章のQAエージェントに対して、以下の評価機能を追加しています。
 
 - **Vibe Check**: テスト質問を実行してトレースを目視確認（5.2節）
-- **標準スコアラー**: Correctness、ToolCallCorrectnessによる自動評価（5.4.5節）
-- **カスタムスコアラー**: ルールベース、Guidelines、make_judgeによる独自評価指標（5.4.6節）
-- **スコアラー登録**: MLflowへの評価指標のバージョン管理（5.4.7節）
+- **標準スコアラー**: Correctness、ToolCallCorrectnessによる自動評価（5.4.4節）
+- **カスタムスコアラー**: ルールベース、Guidelines、make_judgeによる独自評価指標（5.4.5節）
+- **スコアラー登録**: MLflowへの評価指標のバージョン管理（5.4.6節）
 - **自動評価**: データセット定義とmlflow.genai.evaluate()の実行（5.5-5.6節）
 - **会話シミュレーション**: ConversationSimulatorによる複数ターン評価（5.7節）
 
@@ -69,7 +69,7 @@ make ingest
 make vibe-check
 ```
 
-### 5.4.5節: 標準スコアラーの個別テスト
+### 5.4.4節: 標準スコアラーの個別テスト
 
 ToolCallCorrectness、Correctnessを個別にテストします。
 
@@ -77,7 +77,7 @@ ToolCallCorrectness、Correctnessを個別にテストします。
 make test-standard
 ```
 
-### 5.4.6節: カスタムスコアラーの個別テスト
+### 5.4.5節: カスタムスコアラーの個別テスト
 
 ルールベース、Guidelines、make_judgeの各スコアラーをテストします。
 
@@ -85,7 +85,7 @@ make test-standard
 make test-custom
 ```
 
-### 5.4.7節: スコアラーの登録
+### 5.4.6節: スコアラーの登録
 
 スコアラーをMLflowに登録してバージョン管理します。
 
@@ -124,9 +124,9 @@ make eval-all
 | `make install` | 依存関係をインストール | - |
 | `make ingest` | ドキュメントをベクトルストアに取り込み | - |
 | `make vibe-check` | テスト質問を実行してトレースを確認 | 5.2 |
-| `make test-standard` | 標準スコアラーの個別テスト | 5.4.5 |
-| `make test-custom` | カスタムスコアラーの個別テスト | 5.4.6 |
-| `make register` | スコアラーをMLflowに登録 | 5.4.7 |
+| `make test-standard` | 標準スコアラーの個別テスト | 5.4.4 |
+| `make test-custom` | カスタムスコアラーの個別テスト | 5.4.5 |
+| `make register` | スコアラーをMLflowに登録 | 5.4.6 |
 | `make eval` | 自動評価の実行（メインスクリプト） | 5.5-5.6 |
 | `make sim` | 会話シミュレーション | 5.7 |
 | `make eval-all` | vibe-check → eval を順番に実行 | - |
@@ -156,9 +156,9 @@ ch5/
 │   ├── __init__.py
 │   ├── scorers.py                 # 全スコアラーの定義を集約
 │   ├── 01_vibe_check.py           # 5.2: テスト質問の実行と確認
-│   ├── 02_standard_scorers.py     # 5.4.5: 標準評価指標の個別テスト
-│   ├── 03_custom_scorers.py       # 5.4.6: カスタム評価指標の実装
-│   ├── 04_register_scorers.py     # 5.4.7: 評価指標の登録
+│   ├── 02_standard_scorers.py     # 5.4.4: 標準評価指標の個別テスト
+│   ├── 03_custom_scorers.py       # 5.4.5: カスタム評価指標の実装
+│   ├── 04_register_scorers.py     # 5.4.6: 評価指標の登録
 │   ├── 05_run_evaluation.py       # 5.5-5.6: データセット定義と自動評価の実行
 │   └── 06_conversation_sim.py     # 5.7: [応用] 会話シミュレーション
 ├── Makefile

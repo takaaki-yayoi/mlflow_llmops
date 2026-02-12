@@ -9,9 +9,9 @@ help:
 	@echo ""
 	@echo "原稿順に実行:"
 	@echo "  make vibe-check     5.2: テスト質問を実行してトレースを確認"
-	@echo "  make test-standard  5.4.5: 標準スコアラーの個別テスト"
-	@echo "  make test-custom    5.4.6: カスタムスコアラーの個別テスト"
-	@echo "  make register       5.4.7: スコアラーをMLflowに登録"
+	@echo "  make test-standard  5.4.4: 標準スコアラーの個別テスト"
+	@echo "  make test-custom    5.4.5: カスタムスコアラーの個別テスト"
+	@echo "  make register       5.4.6: スコアラーをMLflowに登録"
 	@echo "  make eval           5.5-5.6: 自動評価の実行 (メインスクリプト)"
 	@echo "  make sim            5.7: [応用] 会話シミュレーション"
 	@echo ""
@@ -35,15 +35,15 @@ cli:
 vibe-check:
 	uv run python evaluation/01_vibe_check.py
 
-# 5.4.5: 標準スコアラーのテスト
+# 5.4.4: 標準スコアラーのテスト
 test-standard:
 	uv run python evaluation/02_standard_scorers.py
 
-# 5.4.6: カスタムスコアラーのテスト
+# 5.4.5: カスタムスコアラーのテスト
 test-custom:
 	uv run python evaluation/03_custom_scorers.py
 
-# 5.4.7: スコアラーの登録
+# 5.4.6: スコアラーの登録
 register:
 	uv run python evaluation/04_register_scorers.py
 
