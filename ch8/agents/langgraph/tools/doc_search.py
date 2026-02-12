@@ -15,6 +15,9 @@ import os
 
 logger = logging.getLogger(__name__)
 
+# AsyncMilvusClient初期化時の警告を抑制（同期処理のみ使用するため影響なし）
+logging.getLogger("langchain_milvus").setLevel(logging.ERROR)
+
 DB_PATH = Path("data") / "milvus.db"
 
 

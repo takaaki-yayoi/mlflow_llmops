@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 環境
+.env
+.venv/
+
+# データ
+data/
+.scrapy_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
