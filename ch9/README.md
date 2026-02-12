@@ -17,18 +17,6 @@
 
 ## 実行方法
 
-### Databricksで実行する場合
-
-各 `.ipynb` ファイルをDatabricksワークスペースにインポートしてそのまま実行できます。
-
-1. Databricksワークスペースで「インポート」を選択
-2. `.ipynb` ファイルをアップロード
-3. クラスターをアタッチして上から順にセルを実行
-
-**注意**: `mlflow.set_tracking_uri()` の行はDatabricksでは不要です（自動設定されます）。
-
-### ローカル環境(Jupyter)で実行する場合
-
 ```bash
 # Jupyter Notebookを起動
 pip install notebook
@@ -36,6 +24,12 @@ jupyter notebook
 ```
 
 各ノートブック冒頭の `%pip install` セルで依存パッケージがインストールされます。`YOUR_API_KEY` を実際のOpenAI APIキーに置き換えてから実行してください。
+
+MLflow Tracking Serverはローカルで起動しておく必要があります。
+
+```bash
+mlflow server --host 0.0.0.0 --port 5000
+```
 
 ## 各ノートブックの詳細
 
