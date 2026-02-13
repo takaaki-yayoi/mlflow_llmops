@@ -24,18 +24,23 @@ MLflow を活用した LLM アプリケーションの開発・運用（LLMOps�
 
 ### 初回セットアップ
 
-1. ルートの共通テンプレートから各章フォルダに `.env` をコピーします。
+1. リポジトリルートで `.env` を作成し、APIキーを設定します（初回のみ）。
 
 ```bash
-cp .env.template ch3/.env
+cp .env.template .env
 ```
 
-2. コピーした `.env` ファイルを編集し、APIキーを設定します。
+`.env` を編集して API キーを入力してください。
 
-```bash
-# .env を編集
+```
 OPENAI_API_KEY=your-api-key-here
 EXA_API_KEY=your-exa-api-key-here
+```
+
+2. 作業する章のディレクトリにコピーします。
+
+```bash
+cp .env ch3/.env
 ```
 
 3. 各章のディレクトリに移動し、依存関係をインストールします。
@@ -45,20 +50,16 @@ cd ch3
 make install
 ```
 
-### 章を通して作業する場合
+### 別の章に進むとき
 
-前の章の `.env` をそのままコピーすると、APIキーを再設定する手間が省けます。
+ルートの `.env` を再度コピーするだけで済みます。APIキーの再設定は不要です。
 
 ```bash
-cp ch3/.env ch4/.env
-cp ch4/.env ch5/.env
+cp .env ch4/.env
+cp .env ch5/.env
 ```
 
 各章のフォルダには章固有の `.env.template` も用意されていますので、そちらを使用することもできます。
-
-```bash
-cp ch4/.env.template ch4/.env
-```
 
 ### MLflow Tracking Server（第4章以降）
 
