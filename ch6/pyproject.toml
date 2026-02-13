@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mlflow-prompt-registry"
+version = "0.1.0"
+description = "MLflowサンプル - 第6章: Prompt Registry"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    # MLflow（genai extrasでlitellm等を含む）
+    "mlflow[genai]>=3.9.0",
+    # LLM
+    "openai>=1.0.0",
+    # プロンプト最適化（GEPA）
+    "gepa>=0.0.18",
+    # ユーティリティ
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "pandas>=2.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["prompts", "data"]
