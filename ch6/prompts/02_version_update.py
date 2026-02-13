@@ -1,7 +1,7 @@
-"""6.2.2節: バージョン更新と不変性
+"""6.2節: バージョン更新
 
-既存のsummarization-promptを改良してバージョン2を登録する。
-プロンプトバージョンは不変(immutable)であることを確認する。
+第5章の評価で見つかった問題(Web検索優先、引用不足、冗長)に対処するため、
+プロンプトを改善して新バージョンとして登録する。
 
 実行: make version
 前提: 01_register_prompt.pyを実行済みであること
@@ -11,26 +11,46 @@ import mlflow
 
 mlflow.set_tracking_uri("http://localhost:5000")
 
-new_template = """
-あなたは要約の専門家です。以下のコンテンツを、要点を捉えた明確で有益な{{ num_sentences }}文に凝縮してください。 文章: {{ sentences }} 要約は以下の条件を満たす必要があります:
-正確に{{ num_sentences }}文である
-最も重要な情報のみを含む
-中立的で客観的なトーンで書かれている
-元のテキストと同じレベルのフォーマリティを維持する
+# 第5章の評価結果に基づいて改善したプロンプト
+improved_prompt_v2 = """
+あなたはMLflowに関する質問に答える専門アシスタントです。
+ユーザーの質問に対して、検索ツールを使用して正確な回答を提供してください。
+
+## 回答ガイドライン
+
+1. **正確性を最優先する**
+   - 必ず検索ツールを使用して最新情報を確認する
+   - MLflow 3.x系のAPIを使用する(古いAPI名に注意)
+   - コード例は実際に動作することを確認できるもののみ示す
+
+2. **ツール選択の優先順位**
+   - まずdoc_searchで公式ドキュメントを検索する
+   - ドキュメントに情報がない場合のみweb_searchを使用する
+
+3. **情報源を明記する**
+   - 回答の根拠となるドキュメントやページを引用する
+   - 例：「公式ドキュメント(mlflow.org/docs/...)によると...」
+
+4. **簡潔に回答する**
+   - 質問に直接関係する情報のみを含める
+   - 200-300文字程度を目安にする
+   - 詳細が必要な場合は「詳しくは〇〇を参照」と案内する
+
+5. **不確かな情報は避ける**
+   - 確信がない場合は「確認が必要です」と述べる
+   - 推測と事実を明確に区別する
 """
 
-# 既存のプロンプト名を指定して新バージョンを登録
-updated_prompt = mlflow.genai.register_prompt(
-    name="summarization-prompt",
-    template=new_template,
-    commit_message="ペルソナと条件を追加",
-    tags={"author": "alice@example.com"},
+updated = mlflow.genai.register_prompt(
+    name="qa-agent-system-prompt",
+    template=improved_prompt_v2,
+    commit_message="評価結果に基づきツール選択の優先順位と簡潔さの指示を追加",
 )
-print(f"新バージョン {updated_prompt.version} を登録しました")
+print(f"Updated to version {updated.version}")
 
-# 不変性の確認: バージョン1はそのまま残っている
-v1 = mlflow.genai.load_prompt("prompts:/summarization-prompt/1")
-v2 = mlflow.genai.load_prompt("prompts:/summarization-prompt/2")
-print(f"\nバージョン1のテンプレート(先頭50文字): {v1.template[:50]}...")
-print(f"バージョン2のテンプレート(先頭50文字): {v2.template[:50]}...")
-print("\n各バージョンは不変であり、独立して保持されています。")
+# 不変性の確認
+v1 = mlflow.genai.load_prompt("prompts:/qa-agent-system-prompt/1")
+v2 = mlflow.genai.load_prompt("prompts:/qa-agent-system-prompt/2")
+print(f"\nバージョン1(先頭40文字): {v1.template.strip()[:40]}...")
+print(f"バージョン2(先頭40文字): {v2.template.strip()[:40]}...")
+print("\n各バージョンは不変(immutable)であり、独立して保持されています。")

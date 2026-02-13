@@ -4,17 +4,15 @@
 
 ## 概要
 
-MLflow Prompt Registryの各機能をデモする独立したスクリプト群です。
+第5章の評価で改善点が見つかったQAエージェントのプロンプトを、Prompt Registryで管理しながら改善していくストーリー駆動型のデモです。
 
-- **プロンプトの登録**: テンプレート変数を含むプロンプトの登録と埋め込み（6.2.1節）
-- **バージョン更新**: プロンプトの改良と不変性の確認（6.2.2節）
-- **エイリアス管理**: production/latestエイリアスとロールバック（6.2.3節）
-- **タグとメタデータ**: プロンプト・バージョンへのタグ付与（6.2.4節）
-- **モデルパラメータ**: プロンプトと共にモデル設定を保存（6.2.6節）
-- **システムプロンプト登録**: QAエージェントのシステムプロンプトを登録し第7章と連携（6.4節）
-- **構造化出力**: Pydanticモデルによる出力形式の定義（6.2.7節）
-- **オフライン評価**: make_judgeとmlflow.genai.evaluate()による評価（6.3.1節）
-- **プロンプト最適化**: GepaPromptOptimizerによる自動最適化（6.3.4節）
+1. **プロンプトの登録** → 初期プロンプトをレジストリに登録
+2. **バージョン更新** → 改善版プロンプトをv2として登録
+3. **エイリアス管理** → development/productionで環境別に管理
+4. **評価** → v1 vs v2の品質を定量比較
+5. **最適化** → MetaPrompt/GEPAによる自動改善
+6. **デプロイ** → staging→production昇格、ロールバック
+7. **応用機能** → モデルパラメータ、構造化出力
 
 ## セットアップ
 
@@ -22,7 +20,7 @@ MLflow Prompt Registryの各機能をデモする独立したスクリプト群�
 
 - Python 3.10以上
 - uv（パッケージマネージャー）
-- OpenAI APIキー（06〜08で必要）
+- OpenAI APIキー（04以降で必要）
 
 ### インストール
 
@@ -48,7 +46,7 @@ cp .env.template .env
 
 | 環境変数 | 用途 | 必須 |
 |---------|------|------|
-| `OPENAI_API_KEY` | LLM呼び出し（構造化出力・評価・最適化） | 06〜08で必要 |
+| `OPENAI_API_KEY` | LLM呼び出し（評価・最適化・構造化出力） | 04以降で必要 |
 
 ### MLflow Tracking Serverの起動
 
@@ -58,57 +56,75 @@ uv run mlflow server --host 0.0.0.0 --port 5000
 
 ## 実行方法
 
-原稿のセクション順に実行してください。01〜05はOPENAI_API_KEY不要です。
+### 基本フロー（01〜04を順番に実行）
 
-### 6.2.1節: プロンプトの登録
+#### 6.2節: プロンプトの登録
 
-summarization-promptをPrompt Registryに登録し、変数の埋め込みを確認します。
+QAエージェントのシステムプロンプトをPrompt Registryに登録します。
 
 ```bash
 make register
 ```
 
-### 6.2.2節: バージョン更新と不変性
+#### 6.2節: バージョン更新
 
-プロンプトを改良してバージョン2を登録し、不変性を確認します。
+改善版プロンプトをv2として登録し、不変性を確認します。
 
 ```bash
 make version
 ```
 
-### 6.2.3節: エイリアス管理
+#### 6.2節: エイリアスによるライフサイクル管理
 
-productionエイリアスの設定、ロールバック、復元を実行します。
+development/productionエイリアスの設定と@latestの確認を行います。
 
 ```bash
 make alias
 ```
 
-### 6.2.4節: タグとメタデータ
+#### 6.3節: プロンプトの評価（OPENAI_API_KEY必要）
 
-プロンプトとバージョンにタグを付与します。
+v1とv2のプロンプトをそれぞれ評価し、改善効果を定量比較します。
 
 ```bash
-make tags
+make eval
 ```
 
-### 6.2.6節: モデルパラメータの保存
+### 応用（OPENAI_API_KEY必要）
 
-モデル名やパラメータをプロンプトと共に保存します。
+#### 6.5節: MetaPromptによる構造改善
+
+MetaPromptOptimizerでプロンプトの構造を自動改善します。
+
+```bash
+make optimize-meta
+```
+
+#### 6.5節: GEPAによる反復最適化（コスト注意）
+
+GepaPromptOptimizerでプロンプトを反復的に最適化します。LLMを多数回呼び出すため、コストに注意してください。
+
+```bash
+make optimize-gepa
+```
+
+#### 6.6節: 段階的デプロイとロールバック
+
+staging→production昇格、ロールバック、タグによるガバナンスをデモします。
+
+```bash
+make deploy
+```
+
+#### 6.7節: モデルパラメータの紐付け
+
+プロンプトと共にモデル名やパラメータを保存します。
 
 ```bash
 make model-config
 ```
 
-### 6.4節: QAエージェントのシステムプロンプト登録（第7章連携）
-
-第3-4章のQAエージェントで使用するシステムプロンプトをPrompt Registryに登録します。第7章のAgent Serverと連携するため、`@production`エイリアスも設定します。
-
-```bash
-make system-prompt
-```
-
-### 6.2.7節: 構造化出力（OPENAI_API_KEY必要）
+#### 6.7節: 構造化出力（OPENAI_API_KEY必要）
 
 Pydanticモデルで出力形式を定義し、OpenAI APIで構造化出力を取得します。
 
@@ -116,25 +132,9 @@ Pydanticモデルで出力形式を定義し、OpenAI APIで構造化出力を�
 make structured
 ```
 
-### 6.3.1節: プロンプトのオフライン評価（OPENAI_API_KEY必要）
-
-make_judgeでカスタム評価関数を定義し、評価データセットで評価します。
-
-```bash
-make eval
-```
-
-### 6.3.4節: プロンプト自動最適化（OPENAI_API_KEY必要、コスト注意）
-
-GepaPromptOptimizerでプロンプトを自動最適化します。LLMを多数回呼び出すため、コストに注意してください。
-
-```bash
-make optimize
-```
-
 ### 一括実行
 
-01〜07と09を順番に実行します（08は除外）。
+基本フロー（01〜04）+ deploy + model-config + structuredを順番に実行します（optimize-meta/optimize-gepaは除外）。
 
 ```bash
 make all
@@ -145,36 +145,36 @@ make all
 | コマンド | 説明 | 対応セクション |
 |---------|------|--------------|
 | `make install` | 依存関係をインストール | - |
-| `make register` | プロンプトの登録 | 6.2.1 |
-| `make version` | バージョン更新と不変性 | 6.2.2 |
-| `make alias` | エイリアス管理 | 6.2.3 |
-| `make tags` | タグとメタデータ | 6.2.4 |
-| `make model-config` | モデルパラメータの保存 | 6.2.6 |
-| `make system-prompt` | QAエージェントのシステムプロンプト登録（第7章連携） | 6.4 |
-| `make structured` | 構造化出力（OPENAI_API_KEY必要） | 6.2.7 |
-| `make eval` | プロンプトのオフライン評価（OPENAI_API_KEY必要） | 6.3.1 |
-| `make optimize` | プロンプト自動最適化（OPENAI_API_KEY必要） | 6.3.4 |
-| `make all` | 01→07, 09を順番に実行 | - |
+| `make register` | プロンプトの登録 | 6.2 |
+| `make version` | バージョン更新（改善版プロンプト） | 6.2 |
+| `make alias` | エイリアスによるライフサイクル管理 | 6.2 |
+| `make eval` | v1 vs v2の評価比較（OPENAI_API_KEY必要） | 6.3 |
+| `make optimize-meta` | MetaPromptによる構造改善（OPENAI_API_KEY必要） | 6.5 |
+| `make optimize-gepa` | GEPAによる反復最適化（OPENAI_API_KEY必要） | 6.5 |
+| `make deploy` | 段階的デプロイとロールバック | 6.6 |
+| `make model-config` | モデルパラメータの紐付け | 6.7 |
+| `make structured` | 構造化出力（OPENAI_API_KEY必要） | 6.7 |
+| `make all` | 基本フロー + deploy + model-config + structured | - |
 | `make clean` | MLflowデータを削除 | - |
 
 ## ファイル構成
 
 ```
 ch6/
-├── prompts/                          # ★ 第6章の新規コード
+├── prompts/
 │   ├── __init__.py
-│   ├── 01_register_prompt.py         # 6.2.1: プロンプトの登録
-│   ├── 02_version_update.py          # 6.2.2: バージョン更新と不変性
-│   ├── 03_alias_management.py        # 6.2.3: エイリアス管理
-│   ├── 04_tags_metadata.py           # 6.2.4: タグとメタデータ
-│   ├── 05_model_config.py            # 6.2.6: モデルパラメータの保存
-│   ├── 06_structured_output.py       # 6.2.7: 構造化出力
-│   ├── 07_evaluate_prompt.py         # 6.3.1: プロンプトのオフライン評価
-│   ├── 08_optimize_prompt.py         # 6.3.4: プロンプト自動最適化
-│   └── 09_register_system_prompt.py  # 6.4: QAエージェントのシステムプロンプト登録
+│   ├── 01_register_prompt.py         # 6.2: プロンプトの登録
+│   ├── 02_version_update.py          # 6.2: バージョン更新(改善版プロンプト)
+│   ├── 03_alias_management.py        # 6.2: エイリアスによるライフサイクル管理
+│   ├── 04_evaluate_prompt.py         # 6.3: 改善したプロンプトで評価を実行
+│   ├── 05_optimize_metaprompt.py     # 6.5: MetaPromptによる構造改善
+│   ├── 06_optimize_gepa.py           # 6.5: GEPAによる反復最適化
+│   ├── 07_deploy_lifecycle.py        # 6.6: 段階的デプロイとロールバック
+│   ├── 08_model_config.py            # 6.7: モデルパラメータの紐付け
+│   └── 09_structured_output.py       # 6.7: 構造化出力
 ├── data/
 │   ├── __init__.py
-│   └── eval_dataset.py               # 評価用データセット (07, 08で共有)
+│   └── eval_dataset.py               # 評価用データセット (04, 05, 06で共有)
 ├── Makefile
 ├── pyproject.toml
 ├── README.md

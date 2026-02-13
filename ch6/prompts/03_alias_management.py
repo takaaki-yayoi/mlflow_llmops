@@ -1,4 +1,4 @@
-"""6.2.3節: エイリアス管理とライフサイクル
+"""6.2節: エイリアスによるライフサイクル管理
 
 エイリアスを使ってプロンプトバージョンを環境ごとに管理する。
 ロールバックのデモも含む。
@@ -11,35 +11,38 @@ import mlflow
 
 mlflow.set_tracking_uri("http://localhost:5000")
 
-# バージョン2をproductionエイリアスとして設定
+# 開発環境: 最新の実験的バージョン
 mlflow.genai.set_prompt_alias(
-    "summarization-prompt",
-    alias="production",
+    "qa-agent-system-prompt",
+    alias="development",
     version=2,
 )
-print("productionエイリアスをバージョン2に設定しました")
+print("developmentエイリアスをバージョン2に設定しました")
 
-# エイリアスを使用してプロンプトをロード
-prompt = mlflow.genai.load_prompt("prompts:/summarization-prompt@production")
-print(f"@production → バージョン {prompt.version}")
-
-# @latestで最新バージョンをロード
-latest = mlflow.genai.load_prompt("prompts:/summarization-prompt@latest")
-print(f"@latest → バージョン {latest.version}")
-
-# ロールバック: productionをバージョン1に戻す
+# 本番環境: 安定したバージョン
 mlflow.genai.set_prompt_alias(
-    "summarization-prompt",
+    "qa-agent-system-prompt",
     alias="production",
     version=1,
 )
-rollback = mlflow.genai.load_prompt("prompts:/summarization-prompt@production")
-print(f"\nロールバック後: @production → バージョン {rollback.version}")
+print("productionエイリアスをバージョン1に設定しました")
 
-# 元に戻す(バージョン2をproductionに)
+# エイリアスを使ってプロンプトをロード
+dev_prompt = mlflow.genai.load_prompt("prompts:/qa-agent-system-prompt@development")
+prod_prompt = mlflow.genai.load_prompt("prompts:/qa-agent-system-prompt@production")
+print(f"\n@development → バージョン {dev_prompt.version}")
+print(f"@production  → バージョン {prod_prompt.version}")
+
+# @latestで最新バージョンをロード
+latest = mlflow.genai.load_prompt("prompts:/qa-agent-system-prompt@latest")
+print(f"@latest      → バージョン {latest.version}")
+
+# ロールバックのデモ: productionをバージョン2に昇格
 mlflow.genai.set_prompt_alias(
-    "summarization-prompt",
+    "qa-agent-system-prompt",
     alias="production",
     version=2,
 )
-print("productionエイリアスをバージョン2に復元しました")
+prod_after = mlflow.genai.load_prompt("prompts:/qa-agent-system-prompt@production")
+print(f"\n昇格後: @production → バージョン {prod_after.version}")
+print("コード変更なし・再デプロイ不要でプロンプトを切り替えられます。")
