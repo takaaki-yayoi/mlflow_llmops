@@ -41,7 +41,7 @@ def _load_system_prompt() -> str:
     レジストリが利用できない場合は、第4章のデフォルトプロンプトにフォールバックします。
     """
     try:
-        prompt = mlflow.genai.load_prompt("prompts:/qa-system-prompt@production")
+        prompt = mlflow.genai.load_prompt("prompts:/qa-agent-system-prompt@production")
         return prompt.template
     except Exception:
         # プロンプトレジストリが未設定の場合は第4章のデフォルトを使用
