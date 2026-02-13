@@ -29,6 +29,14 @@ make install
 
 ### 環境変数の設定
 
+リポジトリルートの共通テンプレートからコピーする方法（推奨）：
+
+```bash
+cp ../.env.template .env
+```
+
+または、章固有のテンプレートからコピーすることもできます：
+
 ```bash
 cp .env.template .env
 ```
