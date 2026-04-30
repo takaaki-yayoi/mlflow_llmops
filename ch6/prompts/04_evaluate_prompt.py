@@ -8,6 +8,15 @@ Prompt Registryに登録したプロンプトのバージョンごとに評価�
 
 実行: make eval
 前提: 02_version_update.pyを実行済み、OPENAI_API_KEYが設定されていること
+
+# 本書本文との差分
+
+本書リスト6.8 ではカスタムスコアラーとして make_judge を使う LLMジャッジベースの実装を
+示していますが (`from mlflow.genai.judges import make_judge`)、本スクリプトでは
+@scorer デコレータを使った独自LLM呼び出しベースの実装を採用しています
+(`from mlflow.genai.scorers import scorer`)。両方とも有効な実装ですが、
+評価関数の動作原理が異なるため、本書と本スクリプトで出力が異なる可能性があります。
+詳細は ch6/CHAPTER_NOTES.md を参照してください。
 """
 
 import mlflow

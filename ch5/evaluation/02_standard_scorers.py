@@ -5,6 +5,22 @@
 
 実行: make test-standard
 前提: make vibe-check でトレースが生成済みであること
+
+# 本書本文との差分
+
+本書では「MLflow UIで質問1のトレースIDをコピーして mlflow.get_trace() で取得する」
+流れで説明していますが、本スクリプトでは get_latest_traces() で最新のトレースを
+自動取得します。そのため:
+
+- 本書リスト5.2 の判定理由 "Missing: {'doc_search'}; Unexpected: {'web_search'}" は、
+  質問1のトレースで web_search が使われた場合の例であり、本スクリプトの実行結果は
+  使用されるトレースに応じて変動します。
+- 本書リスト5.3 の expected_response は LangGraph トークン使用量に関する長文ですが、
+  本スクリプトではフレームワーク対応に関する短文を使用しているため、判定結果が
+  本書とは異なります。
+
+本書と同じ出力を再現したい場合は、コード内の `traces[0]` を該当質問のトレースIDに
+差し替えてください。詳細は ch5/CHAPTER_NOTES.md を参照してください。
 """
 
 import sys

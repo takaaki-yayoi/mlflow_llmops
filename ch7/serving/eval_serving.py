@@ -6,6 +6,7 @@ Agent Serverと同じ@invoke関数をin-processで呼び出し、
 注意: Agent Serverを停止してから実行してください。
     エージェント初期化時にMilvusデータベースを開くため、
     Agent Serverが起動中だとファイルロックが競合します。
+    この制約は本書本文には明記されていません。詳細は ch7/CHAPTER_NOTES.md を参照してください。
 
 使用方法:
     make eval

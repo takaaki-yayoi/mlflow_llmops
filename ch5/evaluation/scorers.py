@@ -5,6 +5,13 @@
 - ルールベースカスタム: contains_code_block
 - Guidelinesベース: has_reference_link, appropriate_katakana
 - make_judgeベース: katakana_judge (応用)
+
+# 本書本文との差分
+
+本書リスト5.8 の make_judge では feedback_value_type までで終わっていますが、
+本ファイルの katakana_judge では `model="openai:/gpt-4o-mini"` を明示的に指定して
+います。OpenAI 以外の API キーしかない場合は、katakana_judge の model 引数を
+該当プロバイダ (例: anthropic:/claude-sonnet-4-20250514) に変更してください。
 """
 
 import re

@@ -6,6 +6,18 @@ MLflow を活用した LLM アプリケーションの開発・運用（LLMOps�
 
 本リポジトリのコードは書籍本文のコードとは完全に一致しません。書籍本文のコードは紙面の都合で抜粋・簡略化されています。動作する完全なコードは本リポジトリを正としてください。MLflowのバージョンアップに追従するため、リポジトリ側は継続的に更新されます。
 
+リポジトリと本書本文で挙動や出力が異なる箇所、本書中で言及されていてもリポジトリには未収録の機能、応用編の意図的な未収録などについては、各章の `CHAPTER_NOTES.md` で詳細を解説しています。
+
+| 章 | ノート |
+|----|--------|
+| 第5章 | [ch5/CHAPTER_NOTES.md](ch5/CHAPTER_NOTES.md) |
+| 第6章 | [ch6/CHAPTER_NOTES.md](ch6/CHAPTER_NOTES.md) |
+| 第7章 | [ch7/CHAPTER_NOTES.md](ch7/CHAPTER_NOTES.md) |
+| 第8章 | [ch8/CHAPTER_NOTES.md](ch8/CHAPTER_NOTES.md) |
+| 第9章 | [ch9/CHAPTER_NOTES.md](ch9/CHAPTER_NOTES.md) |
+
+本書記載と挙動が合わない箇所、上記ドキュメントに未記載の差分などを発見された場合は、GitHub Issues で `errata` ラベルを付けて報告いただければ、随時 `CHAPTER_NOTES.md` を更新します。
+
 ## 各章の概要
 
 | 章 | テーマ | 内容 |
