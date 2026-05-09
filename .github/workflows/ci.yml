@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # 毎週月曜 朝 7時 JST (UTC 22時 日曜) に依存解決を確認
+    - cron: "0 22 * * 0"
+  workflow_dispatch: {}
+
+jobs:
+  static-checks:
+    name: 静的チェック (構文 / ノートブック / TOML)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: バリデータをインストール
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ruff nbformat
+
+      - name: ruff (構文・未定義参照などのみ)
+        run: |
+          ruff check --select=E9,F63,F7,F82 \
+            ch3 ch4 ch5 ch6 ch7 ch8
+
+      - name: 全 .py ファイルを compileall で構文チェック
+        run: |
+          python -m compileall -q ch3 ch4 ch5 ch6 ch7 ch8 ch9
+
+      - name: ノートブック (.ipynb) を nbformat で検証
+        run: |
+          python - <<'PY'
+          import glob
+          import sys
+          import nbformat
+
+          fails = []
+          for path in sorted(glob.glob("ch*/*.ipynb")):
+              try:
+                  nb = nbformat.read(path, as_version=4)
+                  nbformat.validate(nb)
+                  print("OK ", path)
+              except Exception as e:
+                  fails.append((path, e))
+                  print("NG ", path, "->", e)
+          sys.exit(1 if fails else 0)
+          PY
+
+      - name: pyproject.toml の妥当性チェック
+        run: |
+          python - <<'PY'
+          import glob
+          import sys
+          import tomllib
+
+          fails = []
+          for path in sorted(glob.glob("ch*/pyproject.toml")):
+              try:
+                  with open(path, "rb") as f:
+                      tomllib.load(f)
+                  print("OK ", path)
+              except Exception as e:
+                  fails.append((path, e))
+                  print("NG ", path, "->", e)
+          sys.exit(1 if fails else 0)
+          PY
+
+  uv-sync:
+    name: uv sync (${{ matrix.ch }})
+    runs-on: ubuntu-latest
+    # 依存解決はコストが高いので、定期実行 / 手動実行 / コミットメッセージに [deps] を含む場合のみ
+    if: |
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.head_commit.message, '[deps]')
+    strategy:
+      fail-fast: false
+      matrix:
+        ch: [ch3, ch4, ch5, ch6, ch7, ch8]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: uv をインストール
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: uv sync (${{ matrix.ch }})
+        working-directory: ${{ matrix.ch }}
+        run: uv sync
+
+      - name: import スモークテスト
+        working-directory: ${{ matrix.ch }}
+        env:
+          # API キーが無くても import 段階で落ちないこと、を確認する目的
+          OPENAI_API_KEY: dummy-key-for-import-test
+          EXA_API_KEY: dummy-key-for-import-test
+          ENABLE_WEB_SEARCH: "false"
+        run: |
+          uv run python -c "import mlflow; print('mlflow', mlflow.__version__)"
