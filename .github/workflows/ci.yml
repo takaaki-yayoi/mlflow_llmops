@@ -15,9 +15,9 @@ jobs:
     name: 静的チェック (構文 / ノートブック / TOML)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -86,9 +86,9 @@ jobs:
       matrix:
         ch: [ch3, ch4, ch5, ch6, ch7, ch8]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
