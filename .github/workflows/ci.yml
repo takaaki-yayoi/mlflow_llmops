@@ -109,4 +109,10 @@ jobs:
           EXA_API_KEY: dummy-key-for-import-test
           ENABLE_WEB_SEARCH: "false"
         run: |
-          uv run python -c "import mlflow; print('mlflow', mlflow.__version__)"
+          # ch3 は MLflow を使わないベースライン章のため、langchain/langgraph で確認
+          # ch4 以降は MLflow が依存に含まれる
+          if [ "${{ matrix.ch }}" = "ch3" ]; then
+            uv run python -c "import langchain, langgraph; print('ch3 deps ok (langchain, langgraph)')"
+          else
+            uv run python -c "import mlflow; print('mlflow', mlflow.__version__)"
+          fi
