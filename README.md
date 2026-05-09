@@ -1,22 +1,35 @@
 # MLflowで実践するLLMOps――生成AIアプリケーションの実験管理と品質保証 サンプルコード
 
-MLflow を活用した LLM アプリケーションの開発・運用（LLMOps）を学ぶための書籍「MLflowで実践するLLMOps――生成AIアプリケーションの実験管理と品質保証」のサンプルコードリポジトリです。
+[![CI](https://github.com/takaaki-yayoi/mlflow_llmops/actions/workflows/ci.yml/badge.svg)](https://github.com/takaaki-yayoi/mlflow_llmops/actions/workflows/ci.yml)
+
+MLflow を活用した LLM アプリケーションの開発・運用 (LLMOps) を学ぶための書籍「MLflowで実践するLLMOps――生成AIアプリケーションの実験管理と品質保証」のサンプルコードリポジトリです。
 
 **本文中のコードと差分がある場合、本リポジトリを優先してください。**
 
-本リポジトリのコードは書籍本文のコードとは完全に一致しません。書籍本文のコードは紙面の都合で抜粋・簡略化されています。動作する完全なコードは本リポジトリを正としてください。MLflowのバージョンアップに追従するため、リポジトリ側は継続的に更新されます。
+本リポジトリのコードは書籍本文のコードとは完全に一致しません。書籍本文のコードは紙面の都合で抜粋・簡略化されています。動作する完全なコードは本リポジトリを正としてください。MLflow のバージョンアップに追従するため、リポジトリ側は継続的に更新されます。
+
+# リポジトリ全体のドキュメント
+
+| ドキュメント | 内容 |
+| --- | --- |
+| [docs/external-refs.md](docs/external-refs.md) | 本書の脚注 / 注釈で参照されている MLflow 公式 URL の要約集。本書の流れを止めずに該当ページの要点を把握できます。 |
+| [docs/why/](docs/why/README.md) | 章別「なぜこの機能が嬉しいのか」サマリ。各章を読む前後に、現場のどんな課題に効くのかを補強します。 |
+
+# 章別の対応表 / 差分ノート (CHAPTER_NOTES.md)
 
 リポジトリと本書本文で挙動や出力が異なる箇所、本書中で言及されていてもリポジトリには未収録の機能、応用編の意図的な未収録などについては、各章の `CHAPTER_NOTES.md` で詳細を解説しています。
 
-| 章 | ノート |
-|----|--------|
-| 第5章 | [ch5/CHAPTER_NOTES.md](ch5/CHAPTER_NOTES.md) |
-| 第6章 | [ch6/CHAPTER_NOTES.md](ch6/CHAPTER_NOTES.md) |
-| 第7章 | [ch7/CHAPTER_NOTES.md](ch7/CHAPTER_NOTES.md) |
-| 第8章 | [ch8/CHAPTER_NOTES.md](ch8/CHAPTER_NOTES.md) |
-| 第9章 | [ch9/CHAPTER_NOTES.md](ch9/CHAPTER_NOTES.md) |
+| 章 | 対応表 / 差分ノート | なぜ嬉しいのか |
+| --- | --- | --- |
+| 第3章 | [ch3/CHAPTER_NOTES.md](ch3/CHAPTER_NOTES.md) | [docs/why/ch3.md](docs/why/ch3.md) |
+| 第4章 | [ch4/CHAPTER_NOTES.md](ch4/CHAPTER_NOTES.md) | [docs/why/ch4.md](docs/why/ch4.md) |
+| 第5章 | [ch5/CHAPTER_NOTES.md](ch5/CHAPTER_NOTES.md) | [docs/why/ch5.md](docs/why/ch5.md) |
+| 第6章 | [ch6/CHAPTER_NOTES.md](ch6/CHAPTER_NOTES.md) | [docs/why/ch6.md](docs/why/ch6.md) |
+| 第7章 | [ch7/CHAPTER_NOTES.md](ch7/CHAPTER_NOTES.md) | [docs/why/ch7.md](docs/why/ch7.md) |
+| 第8章 | [ch8/CHAPTER_NOTES.md](ch8/CHAPTER_NOTES.md) | [docs/why/ch8.md](docs/why/ch8.md) |
+| 第9章 | [ch9/CHAPTER_NOTES.md](ch9/CHAPTER_NOTES.md) | [docs/why/ch9.md](docs/why/ch9.md) |
 
-本書記載と挙動が合わない箇所、上記ドキュメントに未記載の差分などを発見された場合は、GitHub Issues で `errata` ラベルを付けて報告いただければ、随時 `CHAPTER_NOTES.md` を更新します。
+本書記載と挙動が合わない箇所、上記ドキュメントに未記載の差分などを発見された場合は、GitHub Issues で `errata` ラベルを付けて報告いただければ、随時 `CHAPTER_NOTES.md` を更新します。「なぜ嬉しいのか」への補足や反論は `why-discussion` ラベルでフィードバックを歓迎します。
 
 ## 各章の概要
 
