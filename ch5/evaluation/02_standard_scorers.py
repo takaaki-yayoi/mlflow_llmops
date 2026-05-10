@@ -10,17 +10,14 @@
 
 本書では「MLflow UIで質問1のトレースIDをコピーして mlflow.get_trace() で取得する」
 流れで説明していますが、本スクリプトでは get_latest_traces() で最新のトレースを
-自動取得します。そのため:
+自動取得します。`expected_response` は本書リスト5.3 と同じ長文 (LangGraphエージェントの
+トークン使用量に関する内容) を使用しています。
 
-- 本書リスト5.2 の判定理由 "Missing: {'doc_search'}; Unexpected: {'web_search'}" は、
-  質問1のトレースで web_search が使われた場合の例であり、本スクリプトの実行結果は
-  使用されるトレースに応じて変動します。
-- 本書リスト5.3 の expected_response は LangGraph トークン使用量に関する長文ですが、
-  本スクリプトではフレームワーク対応に関する短文を使用しているため、判定結果が
-  本書とは異なります。
-
-本書と同じ出力を再現したい場合は、コード内の `traces[0]` を該当質問のトレースIDに
-差し替えてください。詳細は ch5/CHAPTER_NOTES.md を参照してください。
+本書リスト5.2 の判定理由 "Missing: {'doc_search'}; Unexpected: {'web_search'}" は、
+質問1のトレースで web_search が使われた場合の例であり、本スクリプトの実行結果は
+使用されるトレースに応じて変動します。本書と同じ出力を再現したい場合は、コード内の
+`traces[0]` を質問1 (LangGraphエージェントのトークン使用量) のトレースIDに差し替えて
+ください。詳細は ch5/CHAPTER_NOTES.md を参照してください。
 """
 
 import sys
@@ -83,10 +80,17 @@ def test_correctness(trace):
     print("--- Correctness ---")
 
     scorer = Correctness()
+    # 本書 リスト5.3 と同じ正解データ。質問1 (LangGraphエージェントのトークン使用量) のトレースで使う前提。
+    # デフォルトではMLflowはOpenAIのGPTモデルを使用します。他のモデルを使用する場合は、
+    # modelパラメータを<provider>:/<model_name>の形式で指定してください。
+    # 例: correctness = Correctness(model="anthropic:/claude-sonnet-4-20250514")
+    # 例: correctness = Correctness(model="google:/gemini-2.0-flash")
     expected_response = (
-        "MLflowトレーシングは、LangChain、LangGraph、LlamaIndex、"
-        "OpenAI SDK、Anthropic SDK、AWS Bedrock SDKなどの"
-        "主要なフレームワークに対応しています。"
+        "LangGraphエージェントのトークン使用量をMLflowで可視化するには、"
+        "MLflowのトレーシング機能が利用できます。`mlflow.langchain.autolog()`"
+        "APIをコードに追加することで、エージェントを実行するたびにトレースが生成され、"
+        "呼び出しごとのトークンの使用量が記録されます。"
+        "ダッシュボードで使用量の推移をグラフで確認することも可能です。"
     )
 
     result = scorer(

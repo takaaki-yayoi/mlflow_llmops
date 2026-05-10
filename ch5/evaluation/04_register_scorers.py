@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import mlflow
+from mlflow.genai import get_scorer
 
 from evaluation.scorers import has_reference_link, appropriate_katakana
 
@@ -39,14 +40,14 @@ def main():
         appropriate_katakana.register()
         print("  登録完了")
 
-        # 登録済みスコアラーの取得テスト
-        # versionを省略すると最新バージョンを取得。特定バージョンの指定も可能: get_scorer(name="...", version=1)
+        # 登録済みスコアラーの取得テスト (本書 リスト5.9)
+        # 最新バージョンを取得
         print("\n--- 登録済みスコアラーの取得テスト ---")
-        loaded_scorer = mlflow.genai.get_scorer(name="has_reference_link")
-        print(f"  取得成功: {loaded_scorer.name}")
+        has_reference_link_loaded = get_scorer(name="has_reference_link", version=1)
+        print(f"  取得成功: {has_reference_link_loaded.name}")
 
-        loaded_scorer2 = mlflow.genai.get_scorer(name="appropriate_katakana")
-        print(f"  取得成功: {loaded_scorer2.name}")
+        appropriate_katakana_loaded = get_scorer(name="appropriate_katakana", version=1)
+        print(f"  取得成功: {appropriate_katakana_loaded.name}")
 
     except ConnectionError:
         print("\nMLflow Tracking Serverに接続できません。")

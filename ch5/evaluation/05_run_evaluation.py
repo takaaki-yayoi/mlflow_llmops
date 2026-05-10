@@ -42,15 +42,17 @@ eval_dataset = [
     },
     {
         "inputs": {
-            "question": "LangGraphエージェントのトークン使用量を追跡するにはどうすればよいですか？"
+            "question": "LangGraphエージェントのトークン使用量を追跡するにはどうすれば良いですか？"
         },
         "expectations": {
+            # 本書 リスト5.3 と同じ正解データ
             "expected_response": (
                 "LangGraphエージェントのトークン使用量をMLflowで可視化するには、"
                 "MLflowのトレーシング機能が利用できます。"
-                "mlflow.langchain.autolog() APIをコードに追加することで、"
-                "エージェントを実行する度にトレースが生成され、"
+                "`mlflow.langchain.autolog()`APIをコードに追加することで、"
+                "エージェントを実行するたびにトレースが生成され、"
                 "呼び出しごとのトークンの使用量が記録されます。"
+                "ダッシュボードで使用量の推移をグラフで確認することも可能です。"
             ),
             "expected_tool_calls": [{"name": "doc_search"}],
         },

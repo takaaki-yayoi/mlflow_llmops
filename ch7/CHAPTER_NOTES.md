@@ -1,6 +1,6 @@
 # 第7章 リスト ↔ リポジトリ対応表 と 既知の挙動差分
 
-本書 第7章「本番環境で動かす―― サービングとデプロイメント」の各リストとリポジトリ実装の対応表です。
+本書 第7章「本番環境で動かす―― サービングとデプロイメント」の各リストとリポジトリ実装の対応表です。リポジトリのコードは可能な限り本書本文に寄せるように整備されています。
 
 # 7.2 エージェントのサービング準備
 
@@ -13,6 +13,7 @@
   - `serving/start_server.py` (リスト7.3 — サーバー起動スクリプト)
 - **実行**: `make serve`
 - **前提**: `make log-model` でモデルを登録、Prompt Registryに `qa-agent-system-prompt` が登録済みであること (第6章実行後)。
+- **アライメント済み**: `serving/agent.py` のdocstringの「プロンプトレジストリ」を本書通り「Prompt Registry」に揃え、import 文の整理・コメントの統一を行いました。`start_server.py` の構造とコメントも本書通りに揃えました。
 
 # 7.3 サービング中のエージェントの評価
 
@@ -21,6 +22,7 @@
 - **対応ファイル**: `serving/eval_serving.py`
 - **実行**: `make eval`
 - **重要な制約**: Agent Server が稼働中だと Milvus データベースのファイルロックが競合するため、**Agent Serverを停止してから実行してください** (リポジトリの docstring に記載)。本書には明記されていない運用上の注意点です。
+- **アライメント済み**: 変数名 (`eval_dataset` 小文字)、各 `expected_response` の文言を本書 リスト7.4 と完全一致させました (リスト6.8 の `expected_answer` を踏襲) 。
 
 # 7.4 AI Gateway の活用
 
@@ -41,11 +43,13 @@
 
 - **対応ファイル**: `deploy/Dockerfile`
 - **差分**: 本書は抜粋。リポジトリの完全版を参照してください。
+- **本書側のerrata候補**: 本書 リスト7.7 では `EMBEDDING_MODEL=text-embedding-small` と記載されていますが、OpenAIのモデル名としては `text-embedding-3-small` が正しく、本書 リスト7.8 (Kubernetes) でも `text-embedding-3-small` が使用されています。リポジトリは `text-embedding-3-small` を採用しています。
 
 ## リスト7.8 デプロイのためのKubernetesマニフェスト
 
 - **対応ファイル**: `deploy/k8s/deployment.yaml`、`deploy/k8s/service.yaml`
-- **差分**: 本書は `deployment.yaml` のみ抜粋。リポジトリでは `service.yaml` も提供しています。
+- **差分**: 本書は1つのリストとして連結提示、リポジトリでは2ファイルに分離しています。
+- **動作には影響なし**: `kubectl apply -f deploy/k8s/` でディレクトリごと適用すれば本書通りに動作します。
 
 ## リスト7.9 マネージドMLflowでのデプロイ
 

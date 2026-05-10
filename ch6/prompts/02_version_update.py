@@ -11,8 +11,9 @@ import mlflow
 
 mlflow.set_tracking_uri("http://localhost:5000")
 
+# 本書 リスト6.2
 # 第5章の評価結果に基づいて改善したプロンプト
-improved_prompt_v2 = """
+improved_template = """
 あなたはMLflowに関する質問に答える専門アシスタントです。
 ユーザーの質問に対して、検索ツールを使用して正確な回答を提供してください。
 
@@ -41,12 +42,14 @@ improved_prompt_v2 = """
    - 推測と事実を明確に区別する
 """
 
-updated = mlflow.genai.register_prompt(
+# 既存のプロンプト名を指定して新バージョンを登録
+updated_prompt = mlflow.genai.register_prompt(
     name="qa-agent-system-prompt",
-    template=improved_prompt_v2,
+    template=improved_template,
     commit_message="評価結果に基づきツール選択の優先順位と簡潔さの指示を追加",
+    tags={"author": "alice@example.com"},
 )
-print(f"Updated to version {updated.version}")
+print(f"新バージョン {updated_prompt.version}")
 
 # 不変性の確認
 v1 = mlflow.genai.load_prompt("prompts:/qa-agent-system-prompt/1")

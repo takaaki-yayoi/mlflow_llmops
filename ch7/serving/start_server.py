@@ -13,8 +13,8 @@ QAエージェントをResponses APIエンドポイントとしてホストし�
         -d '{"input": [{"role": "user", "content": "MLflow Tracingとは何ですか?"}]}'
 """
 
-# agent.py内の@invokeデコレータを登録するためにインポートが必要
-import serving.agent  # noqa: F401
+# 本書 リスト7.3
+import serving.agent  # noqa: F401 (デコレータの登録に必要)
 
 from mlflow.genai.agent_server import (
     AgentServer,
@@ -24,13 +24,11 @@ from mlflow.genai.agent_server import (
 agent_server = AgentServer("ResponsesAgent")
 app = agent_server.app
 
-# Gitコミットとトレースを紐付け（任意）
-# リポジトリのルートで実行した場合、トレースにコミットハッシュが記録されます
+# Gitコミットとトレースをひも付け（7.3.1で解説）
 setup_mlflow_git_based_version_tracking()
 
 
 def main():
-    # app_import_stringを指定することで複数ワーカーをサポート
     agent_server.run(app_import_string="serving.start_server:app")
 
 

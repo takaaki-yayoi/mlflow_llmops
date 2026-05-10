@@ -20,35 +20,43 @@ load_dotenv()
 
 import mlflow
 from mlflow.genai.scorers import (
-    Safety,
+    RetrievalGroundedness,
     RelevanceToQuery,
+    Safety,
     Guidelines,
 )
 
 mlflow.set_experiment("ch8-monitoring-quickstart")
 
 # === 1. 本番トレースの取得 ===
+# 本書 リスト8.11
 print("=== 本番トレースの取得 ===\n")
 
-traces = mlflow.search_traces(max_results=20)
+# 本番トレースからデータセットを作成
+traces = mlflow.search_traces(
+    filter_string="tags.environment = 'production'",
+    max_results=100,
+)
 
 print(f"評価対象トレース数: {len(traces)}")
 
 if len(traces) == 0:
-    print("⚠️ トレースが見つかりません。先に make tracing を実行してください。")
+    print("⚠️ environment='production' タグ付きのトレースが見つかりません。")
+    print("   先に make tracing を実行してください。")
     exit(1)
 
-# === 2. スコアラーで評価 ===
+# === 2. 複数のスコアラーで評価を実行 ===
 print("\n=== LLM-as-a-Judge 評価実行 ===\n")
 
 results = mlflow.genai.evaluate(
     data=traces,
     scorers=[
-        RelevanceToQuery(),  # 質問との関連性
-        Safety(),  # 有害コンテンツチェック
+        RetrievalGroundedness(),  # 検索結果に基づいているか
+        RelevanceToQuery(),  # 質問に関連しているか
+        Safety(),  # 有害なコンテンツがないか
         Guidelines(
-            name="helpfulness",
-            guidelines="回答はユーザーの質問に対して具体的で実用的な情報を提供している必要があります。",
+            name="professional_tone",
+            guidelines="回答は専門的で丁寧なトーンである必要があります。",
         ),
     ],
 )

@@ -4,7 +4,7 @@
 @invoke デコレータでResponses APIエンドポイントとして登録します。
 
 変更点（第4章からの差分）:
-- システムプロンプトをプロンプトレジストリから取得（6章との連携）
+- システムプロンプトをPrompt Registryから取得（6章との連携）
 - Responses API形式でリクエスト/レスポンスを処理
 - Agent Serverの自動トレーシングを活用
 """
@@ -17,7 +17,6 @@ import dotenv
 dotenv.load_dotenv()
 
 import mlflow
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from mlflow.genai.agent_server import invoke
 from mlflow.types.responses import ResponsesAgentRequest, ResponsesAgentResponse
 
@@ -25,9 +24,8 @@ from mlflow.types.responses import ResponsesAgentRequest, ResponsesAgentResponse
 from agents.langgraph.agent import LangGraphAgent
 from agents.thread import Thread
 
-# --- MLflow設定 ---
-TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI", "http://localhost:5000")
-mlflow.set_tracking_uri(TRACKING_URI)
+# 本書 リスト7.1
+mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI", "http://localhost:5000"))
 mlflow.set_experiment("QAエージェント - サービング")
 
 # エージェントのインスタンスを作成（サーバー起動時に1回だけ初期化）
@@ -35,16 +33,16 @@ agent = LangGraphAgent()
 
 
 def _load_system_prompt() -> str:
-    """プロンプトレジストリからシステムプロンプトを取得する。
+    """Prompt Registryからシステムプロンプトを取得する。
 
-    第6章でプロンプトレジストリに登録したプロンプトを使用します。
+    第6章でPrompt Registryに登録したプロンプトを使用します。
     レジストリが利用できない場合は、第4章のデフォルトプロンプトにフォールバックします。
     """
     try:
         prompt = mlflow.genai.load_prompt("prompts:/qa-agent-system-prompt@production")
         return prompt.template
     except Exception:
-        # プロンプトレジストリが未設定の場合は第4章のデフォルトを使用
+        # Prompt Registryが未設定の場合は第4章のデフォルトを使用
         from agents.langgraph.agent import SYSTEM_PROMPT
 
         return SYSTEM_PROMPT

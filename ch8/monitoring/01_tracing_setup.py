@@ -33,16 +33,21 @@ client = OpenAI()
 
 
 # === 2. メタデータ付きのLLM呼び出し ===
+# 本書 リスト8.7
 @mlflow.trace
-def handle_request(message: str, user_id: str, session_id: str) -> str:
+def handle_chat_request(message: str, user_id: str, session_id: str) -> str:
     """メタデータを付与したリクエスト処理"""
     # トレースにコンテキスト情報を追加
     mlflow.update_current_trace(
         tags={
+            # 標準タグ
             "mlflow.trace.user": user_id,
             "mlflow.trace.session": session_id,
             "mlflow.trace.request_id": str(uuid.uuid4()),
-            "environment": "development",  # 本番では "production"
+            # カスタムタグ
+            "environment": "production",
+            "service.version": os.getenv("SERVICE_VERSION", "unknown"),
+            "deployment.region": os.getenv("DEPLOYMENT_REGION", "unknown"),
         }
     )
 
@@ -70,7 +75,7 @@ print("=== トレース生成 ===")
 session_id = str(uuid.uuid4())
 for i, q in enumerate(questions):
     user_id = f"user-{(i % 2) + 1}"
-    answer = handle_request(q, user_id=user_id, session_id=session_id)
+    answer = handle_chat_request(q, user_id=user_id, session_id=session_id)
     print(f"\nQ: {q}")
     print(f"A: {answer[:100]}...")
 
@@ -78,6 +83,7 @@ for i, q in enumerate(questions):
 mlflow.flush_trace_async_logging()
 
 # === 4. トレース検索 ===
+# 本書 リスト8.8
 print("\n=== トレース検索 ===")
 
 # 全トレースを取得（set_experimentで設定済みのアクティブエクスペリメントを検索）
@@ -85,10 +91,18 @@ all_traces = mlflow.search_traces(max_results=10)
 print(f"総トレース数: {len(all_traces)}")
 
 # 特定ユーザーのトレースを検索
-user1_traces = mlflow.search_traces(
+user_traces = mlflow.search_traces(
     filter_string="tags.`mlflow.trace.user` = 'user-1'",
+    max_results=100,
 )
-print(f"user-1のトレース数: {len(user1_traces)}")
+print(f"user-1のトレース数: {len(user_traces)}")
+
+# 特定セッションのトレースを時系列で取得
+session_traces = mlflow.search_traces(
+    filter_string=f"tags.`mlflow.trace.session` = '{session_id}'",
+    order_by=["timestamp_ms ASC"],
+)
+print(f"このセッションのトレース数: {len(session_traces)}")
 
 print("\n✅ MLflow UI でトレースの詳細を確認してください。")
 print("   各トレースに user, session, request_id タグが設定されています。")

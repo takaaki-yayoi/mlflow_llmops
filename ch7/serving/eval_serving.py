@@ -14,6 +14,7 @@ Agent Serverと同じ@invoke関数をin-processで呼び出し、
     uv run python -m serving.eval_serving
 """
 
+# 本書 リスト7.4
 import asyncio
 import os
 
@@ -26,58 +27,48 @@ from mlflow.genai.agent_server import get_invoke_function
 from mlflow.genai.scorers import RelevanceToQuery, Safety, Guidelines
 from mlflow.types.responses import ResponsesAgentRequest, ResponsesAgentResponse
 
-# @invokeデコレータの登録に必要
 import serving.agent  # noqa: F401
 
-# --- MLflow設定 ---
-TRACKING_URI = os.environ.get("MLFLOW_TRACKING_URI", "http://localhost:5000")
-mlflow.set_tracking_uri(TRACKING_URI)
+mlflow.set_tracking_uri(os.environ.get("MLFLOW_TRACKING_URI", "http://localhost:5000"))
 mlflow.set_experiment("QAエージェント - サービング評価")
+TRACKING_URI = mlflow.get_tracking_uri()
 
 
-# 評価データセット（第5章のデータセットと共通の形式）
-EVAL_DATASET = [
+# 評価データセット（第5章と共通の形式）
+eval_dataset = [
     {
         "inputs": {
             "request": {
                 "input": [
-                    {
-                        "role": "user",
-                        "content": "MLflow Tracingとは何ですか?",
-                    }
+                    {"role": "user", "content": "MLflow Tracingとは何ですか?"}
                 ]
             }
         },
         "expected_response": (
             "MLflow Tracingは、LLMアプリケーションの実行フローを可視化するための"
-            "機能です。プロンプト、検索結果、ツール呼び出し、モデルの応答を"
-            "記録し、デバッグや品質改善に活用できます。"
+            "機能です。各ステップの入出力、レイテンシ、トークン使用量を記録し、"
+            "デバッグや性能分析に活用できます。"
         ),
     },
     {
         "inputs": {
             "request": {
                 "input": [
-                    {
-                        "role": "user",
-                        "content": "MLflowでプロンプトをバージョン管理する方法は?",
-                    }
+                    {"role": "user", "content": "MLflowでプロンプトをバージョン管理する方法は?"}
                 ]
             }
         },
         "expected_response": (
-            "MLflowのPrompt Registryを使うことで、プロンプトの"
-            "バージョン管理とエイリアスによるライフサイクル管理が可能です。"
+            "MLflowのPrompt Registryを使ってプロンプトをバージョン管理できます。"
+            "mlflow.genai.register_prompt()で登録し、"
+            "エイリアス(@production, @latestなど)で環境ごとに使い分けられます。"
         ),
     },
     {
         "inputs": {
             "request": {
                 "input": [
-                    {
-                        "role": "user",
-                        "content": "MLflowの評価機能でLLMの品質をどう測定しますか?",
-                    }
+                    {"role": "user", "content": "MLflowの評価機能でLLMの品質をどう測定しますか?"}
                 ]
             }
         },
@@ -90,11 +81,7 @@ EVAL_DATASET = [
 
 
 def sync_invoke_fn(request: dict) -> ResponsesAgentResponse:
-    """Agent Serverの@invoke関数を同期的に呼び出すラッパー。
-
-    mlflow.genai.evaluate()はpredict_fnに同期関数を要求するため、
-    非同期の@invoke関数をラップします。
-    """
+    """Agent Serverの@invoke関数を同期的に呼び出すラッパー。"""
     invoke_fn = get_invoke_function()
     return asyncio.run(invoke_fn(ResponsesAgentRequest(**request)))
 
@@ -118,23 +105,22 @@ def main():
         ),
     ]
 
-    print(f"評価データセット: {len(EVAL_DATASET)} 件")
+    print(f"評価データセット: {len(eval_dataset)} 件")
     print(f"スコアラー: {', '.join(s.name for s in scorers)}")
     print()
 
     results = mlflow.genai.evaluate(
-        data=EVAL_DATASET,
+        data=eval_dataset,
         predict_fn=sync_invoke_fn,
         scorers=scorers,
     )
 
     # 結果の表示
-    print("\n--- 評価結果 ---")
+    print(f"評価完了: {len(eval_dataset)} 件")
     for metric_name, value in results.metrics.items():
         print(f"  {metric_name}: {value:.3f}")
 
-    print(f"\n評価完了: {len(EVAL_DATASET)} 件")
-    print("詳細はMLflow UIで確認できます:")
+    print("\n詳細はMLflow UIで確認できます:")
     print(f"  {TRACKING_URI}")
 
 

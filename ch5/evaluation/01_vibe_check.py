@@ -16,10 +16,10 @@ load_dotenv()
 from agents.langgraph import LangGraphAgent
 from agents.thread import Thread
 
-# テスト質問リスト
+# テスト質問リスト (本書 リスト5.1)
 TEST_QUESTIONS = [
     "実験管理はどのように始めれば良いですか？",
-    "LangGraphエージェントのトークン使用量を追跡するにはどうすればよいですか？",
+    "LangGraphエージェントのトークン使用量を追跡するにはどうすれば良いですか？",
     "MLflowトレーシングはどのフレームワークに対応していますか？",
 ]
 

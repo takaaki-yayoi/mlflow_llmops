@@ -19,12 +19,15 @@ load_dotenv()
 mlflow.set_tracking_uri("http://localhost:5000")
 
 
+# 本書 リスト6.6
+# 回答の構造を定義
 class QAResponse(BaseModel):
     answer: str
     confidence: float
     sources: List[str]
 
 
+# 構造化出力付きでプロンプトを登録
 prompt = mlflow.genai.register_prompt(
     name="qa-prompt",
     template="次の質問に回答して下さい: {{question}}",
@@ -33,21 +36,13 @@ prompt = mlflow.genai.register_prompt(
 )
 print(f"プロンプト '{prompt.name}' (version {prompt.version}) を登録しました")
 
-loaded = mlflow.genai.load_prompt("prompts:/qa-prompt@latest")
-
+# 本書 リスト6.7
+prompt = mlflow.genai.load_prompt("prompts:/qa-prompt@latest")
 response = openai.OpenAI().beta.chat.completions.parse(
     model="gpt-4o-mini",
-    messages=[
-        {
-            "role": "user",
-            "content": loaded.format(question="MLflowとは何ですか?"),
-        }
-    ],
+    messages=[{"role": "user", "content": prompt.format(question="MLflowとは何ですか？")}],
     response_format=QAResponse,
 )
-
 result = response.choices[0].message.parsed
-print(f"\n構造化出力の結果:")
-print(f"  回答: {result.answer}")
-print(f"  確信度: {result.confidence}")
-print(f"  ソース: {result.sources}")
+print(f"回答: {result.answer}")
+print(f"確信度: {result.confidence}")

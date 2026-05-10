@@ -11,8 +11,9 @@ import mlflow
 
 mlflow.set_tracking_uri("http://localhost:5000")
 
+# 本書 リスト6.1
 # 第4章のQAエージェントで使用していたシステムプロンプト
-initial_prompt = """
+initial_template = """
 あなたはMLflowに関する質問に答える専門アシスタントです。
 ユーザーの質問に対して、必要に応じてドキュメント検索やWeb検索を使用して、
 正確で詳細な回答を提供してください。
@@ -23,10 +24,11 @@ initial_prompt = """
 - 情報源を明記する
 """
 
+# プロンプトの登録
 prompt = mlflow.genai.register_prompt(
-    name="qa-agent-system-prompt",
-    template=initial_prompt,
-    commit_message="QAエージェントの初期プロンプト",
+    name="qa-agent-system-prompt",  # プロンプト名
+    template=initial_template,  # テンプレート
+    commit_message="QAエージェントの初期プロンプト",  # コミットメッセージ
     tags={
         "author": "alice@example.com",
         "task": "qa",
@@ -34,8 +36,4 @@ prompt = mlflow.genai.register_prompt(
     },
 )
 
-print(f"Registered: {prompt.name} (version {prompt.version})")
-
-# テンプレート変数のデモ(原稿の補足説明)
-print(f"\nテンプレート変数の例:")
-print(f"  二重中括弧 {{{{ }}}} で変数を定義し、prompt.format()で埋め込みます")
+print(f"プロンプト '{prompt.name}' (version {prompt.version})")
