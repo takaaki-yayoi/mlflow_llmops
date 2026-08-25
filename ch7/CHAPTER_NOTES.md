@@ -15,7 +15,7 @@
 - **前提**: `make log-model` でモデルを登録、Prompt Registryに `qa-agent-system-prompt` が登録済みであること (第6章実行後)。
 - **アライメント済み**: `serving/agent.py` のdocstringの「プロンプトレジストリ」を本書通り「Prompt Registry」に揃え、import 文の整理・コメントの統一を行いました。`start_server.py` の構造とコメントも本書通りに揃えました。
 
-# 7.3 サービング中のエージェントの評価
+# 7.3 バージョン管理とサービング評価
 
 ## リスト7.4 サービング中のエージェントに評価を実行
 
@@ -24,7 +24,7 @@
 - **重要な制約**: Agent Server が稼働中だと Milvus データベースのファイルロックが競合するため、**Agent Serverを停止してから実行してください** (リポジトリの docstring に記載)。本書には明記されていない運用上の注意点です。
 - **アライメント済み**: 変数名 (`eval_dataset` 小文字)、各 `expected_response` の文言を本書 リスト7.4 と完全一致させました (リスト6.8 の `expected_answer` を踏襲) 。
 
-# 7.4 AI Gateway の活用
+# 7.4 AI Gatewayによるプロバイダー管理
 
 ## リスト7.5 QAエージェントのAI Gateway対応
 ## リスト7.6 AI Gateway対応 (OpenAI SDK)
@@ -43,7 +43,6 @@
 
 - **対応ファイル**: `deploy/Dockerfile`
 - **差分**: 本書は抜粋。リポジトリの完全版を参照してください。
-- **本書側のerrata候補**: 本書 リスト7.7 では `EMBEDDING_MODEL=text-embedding-small` と記載されていますが、OpenAIのモデル名としては `text-embedding-3-small` が正しく、本書 リスト7.8 (Kubernetes) でも `text-embedding-3-small` が使用されています。リポジトリは `text-embedding-3-small` を採用しています。
 
 ## リスト7.8 デプロイのためのKubernetesマニフェスト
 

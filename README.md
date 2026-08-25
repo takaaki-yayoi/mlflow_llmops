@@ -37,9 +37,9 @@ MLflow を活用した LLM アプリケーションの開発・運用 (LLMOps) �
 |----|--------|------|
 | [ch3](ch3/) | MLflowのインストールと初期設定 | LangGraphを使用したRAG対応QAエージェントのセットアップと実行 |
 | [ch4](ch4/) | 可観測性の確保 | MLflow Tracingによるトレーシングと可視化 |
-| [ch5](ch5/) | 評価の仕組み | MLflow GenAIの評価機能による品質の体系的評価 |
-| [ch6](ch6/) | Prompt Registry | プロンプトのバージョン管理、評価、自動最適化 |
-| [ch7](ch7/) | サービングとデプロイメント | Agent Server、AI Gateway、本番デプロイ |
+| [ch5](ch5/) | 改善サイクルを加速する | MLflow GenAIの評価機能による品質の体系的評価 |
+| [ch6](ch6/) | プロンプトエンジニアリング | Prompt Registryによるバージョン管理、評価、自動最適化 |
+| [ch7](ch7/) | 本番環境で動かす | Agent Server、AI Gateway、本番デプロイ |
 | [ch8](ch8/) | 監視と運用 | トレーシング、コスト管理、フィードバック、OpenTelemetry連携 |
 | [ch9](ch9/) | 実践ケーススタディ | 文書情報抽出、エージェント型RAG、マルチエージェントの実践ノートブック |
 

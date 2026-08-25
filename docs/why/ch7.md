@@ -1,4 +1,4 @@
-# 第7章 サービングとデプロイメント / AI Gateway — なぜこの章が必要か
+# 第7章 本番環境で動かす ――サービングとデプロイメント — なぜこの章が必要か
 
 # どんな現場課題に効くか
 
@@ -13,5 +13,5 @@ AI Gateway を使わない場合は、(1) プロバイダ SDK ごとにアプリ
 # 本書の該当節と一緒に読むと良い箇所
 
 - 7.4 節 (AI Gateway) は **MLflow のバージョンによって構成が大きく異なる** セクションです。MLflow 3.10 以降は Tracking Server に統合された新方式 (`http://localhost:5000/gateway/...`) ですが、3.9.0 以下では別プロセスで起動する Legacy 方式を使うことになります。本リポジトリは互換性のため `gateway/gateway_config.yaml` の Legacy 方式も提供しています。詳細は [ch7/CHAPTER_NOTES.md](../../ch7/CHAPTER_NOTES.md) を参照してください。
-- 7.5 節 (本番デプロイメント) では Dockerfile / K8s マニフェスト / Databricks Agent Framework の 3 ルートが紹介されます。**まずどの環境にデプロイするかを決めてから読む**と効率的です。OSS で完結する読者は Dockerfile + K8s マニフェスト、Databricks ユーザは 7.5 節後半の Databricks Agent Framework が中心になります。
+- 7.5 節 (本番デプロイメント) では Dockerfile / Kubernetes マニフェスト / Databricks Model Serving の 3 ルートが紹介されます。**まずどの環境にデプロイするかを決めてから読む**と効率的です。OSS で完結する読者は 7.5.2、7.5.3 (Dockerfile + Kubernetes)、Databricks ユーザは 7.5.4 (Databricks Model Serving) が中心になります。
 - 7.6-7.7 節 (ストリーミング、FastAPI ラッパ、Gradio UI) は本書で「サンプルリポジトリに含まれていません」と明記されており、概念紹介として読む箇所です。動かしたい場合は本書のコードをそのまま試せます。

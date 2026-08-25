@@ -8,7 +8,7 @@ help:
 	@echo "  make tracing  8.1: トレーシングの設定とメタデータ追加"
 	@echo "  make cost     8.2: トークン使用量とコストの可視化"
 	@echo "  make feedback 8.3: フィードバック収集"
-	@echo "  make eval     8.4: 品質評価パイプライン"
+	@echo "  make eval     8.3: 品質評価パイプライン"
 	@echo "  make otel     8.5: OpenTelemetry設定確認"
 	@echo "  make all      全ステップ実行 (tracing cost feedback eval)"
 
@@ -29,7 +29,7 @@ cost:
 feedback:
 	uv run python monitoring/03_feedback.py
 
-# 8.4: 品質評価パイプライン
+# 8.3: 品質評価パイプライン
 eval:
 	uv run python monitoring/04_evaluation.py
 
