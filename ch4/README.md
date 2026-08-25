@@ -1,6 +1,6 @@
 # 第4章 可観測性の確保 サンプルコード
 
-第4章「可観測性の確保 - トレーシングと評価」のサンプルコードです。第3章で構築したQAエージェントにMLflow Tracingを追加し、評価パイプラインを構築します。
+第4章「可観測性の確保 ――トレーシングの導入」のサンプルコードです。第3章で構築したQAエージェントにMLflow Tracingを追加します。
 
 ## 概要
 
@@ -9,7 +9,7 @@
 - **MLflow Tracing**: `mlflow.langchain.autolog()` によるLLM呼び出し・ツール実行の自動トレース
 - **MLflow Tracking Server**: トレース結果の記録・可視化
 
-第3章との差分は `agents/langgraph/agent.py` の3行のみです。
+第3章との差分は `agents/langgraph/agent.py` の4行（importを含む）のみです。本書に掲載されていてリポジトリに未収録のコード（タグ追加、手動トレーシング、応用編）については [CHAPTER_NOTES.md](CHAPTER_NOTES.md) を参照してください。
 
 ```python
 import mlflow
@@ -53,6 +53,8 @@ cp .env.template .env
 |---------|------|------|
 | `OPENAI_API_KEY` | LLM呼び出し・Embedding | はい |
 | `EXA_API_KEY` | Web検索ツール | いいえ（`ENABLE_WEB_SEARCH=false`で無効化可） |
+
+> **注意**: 書籍3.4節の手順でチャット用モデルをAnthropicなど他プロバイダーに変更しても、埋め込みモデル（`scripts/web_ingest.py` と `agents/langgraph/tools/doc_search.py` の `OpenAIEmbeddings`）はOpenAIのままのため、`OPENAI_API_KEY` は引き続き必要です。埋め込みモデルも変更する場合は [ch3/CHAPTER_NOTES.md](../ch3/CHAPTER_NOTES.md) の3.4節の項を参照してください。
 
 ## 実行
 

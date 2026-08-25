@@ -73,6 +73,8 @@ cp .env.template .env
 
 `.env` を編集して `OPENAI_API_KEY` と `EXA_API_KEY` を入力してください。
 
+> **注意**: 書籍3.4節の手順でチャット用モデルをAnthropicなど他プロバイダーに変更しても、埋め込みモデル（`scripts/web_ingest.py` と `agents/langgraph/tools/doc_search.py` の `OpenAIEmbeddings`）はOpenAIのままのため、`OPENAI_API_KEY` は引き続き必要です。埋め込みモデルも変更する場合は [ch3/CHAPTER_NOTES.md](../ch3/CHAPTER_NOTES.md) の3.4節の項を参照してください。
+
 ### 2. 依存関係のインストール
 
 ```bash

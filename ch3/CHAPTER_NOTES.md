@@ -40,7 +40,7 @@
 - **実行**: `make ingest`
 - **差分**:
   * ベクトルデータベースは本文どおり **Milvus Lite** (組み込みモード) を使用し、`data/milvus.db` がローカルに作成されます。外部の Milvus サーバは不要です。
-  * 埋め込みモデルは `OpenAIEmbeddings` の `text-embedding-3-small` に固定です。`.env` の `EMBEDDING_MODEL` を参照するのは検索側 (`doc_search.py`) のみで、取り込み側 (`web_ingest.py`) ではモデル名を直接指定しています。取り込み時と検索時で同じモデルを使う必要があるため、`EMBEDDING_MODEL` を変更する場合は `web_ingest.py` 側も合わせて変更し、`make clean` → `make ingest` を再実行してください。
+  * 埋め込みモデルは `OpenAIEmbeddings` で、`.env` の `EMBEDDING_MODEL` (デフォルト `text-embedding-3-small`) を取り込み側 (`web_ingest.py`) と検索側 (`doc_search.py`) の両方が参照します。取り込み時と検索時で同じモデルを使う必要があるため、`EMBEDDING_MODEL` を変更した場合は `make clean` → `make ingest` を再実行してください。
   * 取得ページ数・チャンク数は MLflow ドキュメントの更新に伴って変動するため、本文の実行例 (293 ページ、1648 チャンク) とは一致しません。
 
 ## 3.3.4 エージェントの実行 (図3.3)
@@ -67,7 +67,7 @@
 
 # 変更前
 from langchain_openai import OpenAIEmbeddings
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+embeddings = OpenAIEmbeddings(model=os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small"))
 
 # 変更後
 from langchain_voyageai import VoyageAIEmbeddings

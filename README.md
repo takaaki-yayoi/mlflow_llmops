@@ -35,19 +35,19 @@ MLflow を活用した LLM アプリケーションの開発・運用 (LLMOps) �
 
 | 章 | テーマ | 内容 |
 |----|--------|------|
-| [ch3](ch3/) | LLMアプリケーションの構築 | LangGraphを使用したRAG対応QAエージェントの構築 |
+| [ch3](ch3/) | MLflowのインストールと初期設定 | LangGraphを使用したRAG対応QAエージェントのセットアップと実行 |
 | [ch4](ch4/) | 可観測性の確保 | MLflow Tracingによるトレーシングと可視化 |
 | [ch5](ch5/) | 評価の仕組み | MLflow GenAIの評価機能による品質の体系的評価 |
 | [ch6](ch6/) | Prompt Registry | プロンプトのバージョン管理、評価、自動最適化 |
 | [ch7](ch7/) | サービングとデプロイメント | Agent Server、AI Gateway、本番デプロイ |
 | [ch8](ch8/) | 監視と運用 | トレーシング、コスト管理、フィードバック、OpenTelemetry連携 |
-| [ch9](ch9/) | チュートリアル | 文書情報抽出、エージェント型RAG、マルチエージェントの実践ノートブック |
+| [ch9](ch9/) | 実践ケーススタディ | 文書情報抽出、エージェント型RAG、マルチエージェントの実践ノートブック |
 
 ## 前提条件
 
 - Python 3.10以上（ch8, ch9は3.11以上）
 - [uv](https://docs.astral.sh/uv/)（パッケージマネージャー）
-- OpenAI APIキー
+- OpenAI APIキー（チャット用モデルを他プロバイダーに変更した場合も、ドキュメント検索の埋め込みモデルで使用します。詳細は [ch3/CHAPTER_NOTES.md](ch3/CHAPTER_NOTES.md) の3.4節の項を参照）
 - Exa APIキー（Web検索機能を使用する場合）
 
 ## 環境設定
