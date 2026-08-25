@@ -286,8 +286,8 @@ def ingest_url(base_url: str, db_path: Path, chunk_size: int, max_pages: int | N
         print("警告: チャンクが作成されませんでした")
         return 0
 
-    # Milvusに保存
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    # Milvusに保存 (埋め込みモデルは検索側 doc_search.py と同じ EMBEDDING_MODEL を使用)
+    embeddings = OpenAIEmbeddings(model=os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small"))
     Milvus.from_documents(
         documents=all_documents,
         embedding=embeddings,
