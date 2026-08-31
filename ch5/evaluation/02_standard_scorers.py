@@ -8,16 +8,19 @@
 
 # 本書本文との差分
 
-本書では「MLflow UIで質問1のトレースIDをコピーして mlflow.get_trace() で取得する」
-流れで説明していますが、本スクリプトでは get_latest_traces() で最新のトレースを
-自動取得します。`expected_response` は本書リスト5.3 と同じ長文 (LangGraphエージェントの
-トークン使用量に関する内容) を使用しています。
+本書では「MLflow UIで質問2のトレースIDをコピーして mlflow.get_trace() で取得する」
+流れで説明していますが、本スクリプトではUI操作なしで実行できるように、
+get_latest_traces() で取得した最新トレースの中から、本書と同じ
+質問2 (LangGraphエージェントのトークン使用量) のトレースを質問文で検索して採点します。
 
 本書リスト5.2 の判定理由 "Missing: {'doc_search'}; Unexpected: {'web_search'}" は、
-質問1のトレースで web_search が使われた場合の例であり、本スクリプトの実行結果は
-使用されるトレースに応じて変動します。本書と同じ出力を再現したい場合は、コード内の
-`traces[0]` を質問1 (LangGraphエージェントのトークン使用量) のトレースIDに差し替えて
-ください。詳細は ch5/CHAPTER_NOTES.md を参照してください。
+質問2のトレースで web_search が使われた場合の例です。エージェントがどのツールを
+選ぶかは実行ごとに変動するため、doc_search が使われた場合は yes と判定されます。
+
+なお、01_vibe_check.py の質問の並び順は本書 リスト5.1 と同じで、
+質問1が「実験管理」、質問2が「LangGraphエージェントのトークン使用量」、
+質問3が「MLflowトレーシングの対応フレームワーク」です。
+詳細は ch5/CHAPTER_NOTES.md を参照してください。
 """
 
 import sys
@@ -32,6 +35,11 @@ from mlflow.genai.scorers import Correctness, ToolCallCorrectness
 # MLflow接続設定（エージェントを使わずスコアラーのみテストするため明示的に設定）
 mlflow.set_tracking_uri("http://localhost:5000")
 mlflow.set_experiment("MLflow QAエージェント")
+
+# 本書 リスト5.2/5.3 が採点対象にしている質問 (01_vibe_check.py の質問2)。
+# 最新トレースを無条件に使うと質問3のトレースが選ばれ、下の expected_response
+# (質問2用の正解データ) と噛み合わずに Correctness が必ず no になってしまう。
+TARGET_QUESTION = "LangGraphエージェントのトークン使用量"
 
 
 def get_latest_traces(experiment_name: str = "MLflow QAエージェント", max_results: int = 5):
@@ -54,6 +62,33 @@ def get_latest_traces(experiment_name: str = "MLflow QAエージェント", max_
         return_type="list",
     )
     return traces
+
+
+def extract_question(trace) -> str:
+    """トレースからユーザーの質問文を取り出す。"""
+    preview = getattr(trace.info, "request_preview", None)
+    if preview:
+        return str(preview)
+    spans = getattr(trace.data, "spans", None)
+    if spans:
+        return str(spans[0].inputs)
+    return ""
+
+
+def select_target_trace(traces, target: str = TARGET_QUESTION):
+    """本書と同じ質問のトレースを選ぶ。見つからなければ最新トレースを返す。
+
+    Args:
+        traces: 新しい順に並んだトレースのリスト
+        target: 探したい質問文に含まれるキーワード
+
+    Returns:
+        (トレース, 本書と同じ質問のトレースが見つかったか) のタプル
+    """
+    for trace in traces:
+        if target in extract_question(trace):
+            return trace, True
+    return traces[0], False
 
 
 def test_tool_call_correctness(trace):
@@ -80,7 +115,7 @@ def test_correctness(trace):
     print("--- Correctness ---")
 
     scorer = Correctness()
-    # 本書 リスト5.3 と同じ正解データ。質問1 (LangGraphエージェントのトークン使用量) のトレースで使う前提。
+    # 本書 リスト5.3 と同じ正解データ。質問2 (LangGraphエージェントのトークン使用量) のトレースで使う前提。
     # デフォルトではMLflowはOpenAIのGPTモデルを使用します。他のモデルを使用する場合は、
     # modelパラメータを<provider>:/<model_name>の形式で指定してください。
     # 例: correctness = Correctness(model="anthropic:/claude-sonnet-4-20250514")
@@ -112,7 +147,7 @@ def main():
     print("=" * 60)
 
     try:
-        traces = get_latest_traces(max_results=3)
+        traces = get_latest_traces(max_results=5)
     except Exception as e:
         print(f"\nMLflow Tracking Serverに接続できません: {e}")
         print("  'uv run mlflow server --port 5000' を実行してください。")
@@ -123,10 +158,19 @@ def main():
         print("  先に 'make vibe-check' を実行してトレースを生成してください。")
         sys.exit(1)
 
-    # 最新のトレースを使用
-    trace = traces[0]
-    print(f"\nトレースID: {trace.info.trace_id}")
-    print(f"トレース数: {len(traces)}件取得\n")
+    # 本書 リスト5.2/5.3 と同じ質問2のトレースを採点対象にする
+    trace, found = select_target_trace(traces)
+    print(f"\nトレース数: {len(traces)}件取得")
+    print(f"トレースID: {trace.info.trace_id}")
+
+    if found:
+        print(f"採点対象: 質問2「{TARGET_QUESTION}...」のトレース (本書 リスト5.2/5.3 と同じ)\n")
+    else:
+        print("採点対象: 最新のトレース")
+        print(f"  ※「{TARGET_QUESTION}」を含むトレースが見つからなかったため、")
+        print("    最新トレースで採点します。下の expected_response は質問2用の正解データなので、")
+        print("    Correctness が no になることがあります。")
+        print("    本書と同じ結果を見たい場合は 'make vibe-check' を実行し直してください。\n")
 
     test_tool_call_correctness(trace)
     test_correctness(trace)

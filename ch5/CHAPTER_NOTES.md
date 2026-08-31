@@ -19,10 +19,30 @@
 
 - **対応ファイル**: `evaluation/02_standard_scorers.py`
 - **実行**: `make test-standard`
+- **本書が採点対象にしているトレース**: 本書 5.2節のテスト質問のうち、**質問2「LangGraphエージェントのトークン使用量を追跡するにはどうすれば良いですか？」** のトレースです。リスト5.1の並び順は以下のとおりで、質問1は「実験管理はどのように始めれば良いですか？」です。
+
+  | 番号 | 質問 |
+  | --- | --- |
+  | 質問1 | 実験管理はどのように始めれば良いですか？ |
+  | 質問2 | LangGraphエージェントのトークン使用量を追跡するにはどうすれば良いですか？ ← リスト5.2/5.3 はこのトレースを使う |
+  | 質問3 | MLflowトレーシングはどのフレームワークに対応していますか？ |
+
 - **残る差分**:
-  * 本書では「MLflow UIで質問1のトレースIDをコピーして `mlflow.get_trace("<ID>")` で取得する」流れで説明していますが、本リポジトリでは `get_latest_traces()` で**最新のトレースを自動取得**します。これは実行可能性のためで、本書のリスト5.2の判定理由 `Missing: {'doc_search'}; Unexpected: {'web_search'}` は質問1のトレースで web_search が使われた場合の例なので、リポジトリの実行結果は使用するトレースに応じて変動します。
-  * 本書と同じ出力を再現したい場合は、`02_standard_scorers.py` 内の `traces[0]` を質問1 (LangGraphエージェントのトークン使用量) のトレースIDに差し替えてください。
+  * 本書では「MLflow UIで質問2のトレースIDをコピーして `mlflow.get_trace("<ID>")` で取得する」流れで説明していますが、本リポジトリではUI操作なしで実行できるように `get_latest_traces()` で最新トレースを取得し、その中から**質問文で質問2のトレースを検索**して採点します (`TARGET_QUESTION` / `select_target_trace()`) 。
+  * 本書のリスト5.2の判定理由 `Missing: {'doc_search'}; Unexpected: {'web_search'}` は、質問2のトレースで web_search が使われた場合の例です。エージェントがどのツールを選ぶかは実行ごとに変わるため、doc_search が使われた実行では `yes` と判定されます。
+  * 質問2のトレースが直近5件に見つからない場合は最新トレースにフォールバックし、その旨を実行時に表示します。この場合はリスト5.3の正解データと質問が噛み合わないため Correctness が `no` になります。`make vibe-check` を実行し直してから `make test-standard` を実行してください。
 - **アライメント済み**: リスト5.3の `expected_response` は本書と同じ長文 (LangGraphトークン使用量に関する内容) に揃えました。
+
+### 出力される `rationale` について
+
+`make test-standard` を実行すると、`value` と並んで英語の長文 `rationale` が出力されます。読み解くうえでのポイントは以下のとおりです。
+
+- `value` は集計に使われる判定値 (`yes` / `no` など) 、`rationale` はその判定を下した**理由**です。本書リスト5.2の `判定理由: Missing: {'doc_search'}; Unexpected: {'web_search'}` がこれにあたります。
+- `rationale` が入るのは組み込みスコアラーと `make_judge` / `Guidelines` で作ったLLMジャッジです。`@scorer` デコレータで書いたルールベースのカスタムスコアラー (例: `contains_code_block`) では `None` になります。
+- LLMジャッジ (`Correctness`、`Guidelines`、`make_judge`) の `rationale` はLLMが生成した自然文です。一方 `ToolCallCorrectness` に `expected_tool_calls` を渡した場合はツールリストの決定的な比較になるため、`Missing: {'doc_search'}; Unexpected: {'web_search'}` のような機械的な差分が入ります。
+- 英語で出力されるのは、組み込みジャッジのプロンプトが英語で固定されているためです。日本語の判定理由が欲しい場合は `make_judge` の `instructions` を日本語で書きます (`scorers.py` の `katakana_judge` がその例) 。
+- `no` になった原因を切り分ける一次情報になります。スコアラーの不具合なのか、採点対象のトレースと正解データが噛み合っていないのかは、`rationale` を読むと判別できます。
+- 5.8節のLLMジャッジのアライメントでは、この `rationale` を人間が読んでジャッジの妥当性を検証し、フィードバックを与える流れになります。
 
 ## リスト5.4 「サンプルコードの生成」を評価するスコアラー
 ## リスト5.5 「サンプルコードの生成」を評価
