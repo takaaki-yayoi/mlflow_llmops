@@ -1,4 +1,4 @@
-"""5.4.4節: 標準の評価指標(ToolCallCorrectness, Correctness)を個別にテストする。
+"""5.4.5節: 標準の評価指標(ToolCallCorrectness, Correctness)を個別にテストする。
 
 既存のトレースを使って標準スコアラーを試すデモスクリプト。
 01_vibe_check.pyで生成されたトレースを自動取得して評価します。
@@ -143,7 +143,7 @@ def test_correctness(trace):
 def main():
     """標準スコアラーの個別テストを実行する。"""
     print("=" * 60)
-    print("5.4.4節: 標準スコアラーの個別テスト")
+    print("5.4.5節: 標準スコアラーの個別テスト")
     print("=" * 60)
 
     try:

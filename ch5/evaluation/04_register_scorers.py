@@ -1,4 +1,4 @@
-"""5.4.6節: 評価指標をMLflowに登録してバージョン管理する。
+"""5.4.7節: 評価指標をMLflowに登録してバージョン管理する。
 
 GuidelinesスコアラーをMLflowのJudgesタブに登録し、
 get_scorerで取得するデモスクリプト。
@@ -26,7 +26,7 @@ mlflow.set_experiment("MLflow QAエージェント")
 def main():
     """スコアラーをMLflowに登録する。"""
     print("=" * 60)
-    print("5.4.6節: スコアラーの登録")
+    print("5.4.7節: スコアラーの登録")
     print("=" * 60)
 
     try:

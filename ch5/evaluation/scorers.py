@@ -25,7 +25,7 @@ correctness = Correctness()
 tool_call_correctness = ToolCallCorrectness()
 
 
-# --- ルールベースのカスタムスコアラー (5.4.5) ---
+# --- ルールベースのカスタムスコアラー (5.4.6) ---
 @scorer
 def contains_code_block(outputs: str) -> bool:
     """回答にコードブロックが含まれているかを検出する。
@@ -36,7 +36,7 @@ def contains_code_block(outputs: str) -> bool:
     return bool(re.search(r"```[\s\S]+?```", text))
 
 
-# --- Guidelinesベースのスコアラー (5.4.5) ---
+# --- Guidelinesベースのスコアラー (5.4.6) ---
 has_reference_link = Guidelines(
     name="has_reference_link",
     # 2つのガイドラインを合わせて指定 (本書 リスト5.6)
@@ -58,7 +58,7 @@ appropriate_katakana = Guidelines(
 )
 
 
-# --- make_judgeベースのスコアラー (5.4.5 補足) ---
+# --- make_judgeベースのスコアラー (5.4.6 補足) ---
 katakana_judge = make_judge(
     name="katakana_usage",
     instructions="""あなたは技術文書の用語レビュアーです。
