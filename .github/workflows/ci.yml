@@ -116,3 +116,66 @@ jobs:
           else
             uv run python -c "import mlflow; print('mlflow', mlflow.__version__)"
           fi
+
+  mlflow-lower-bound:
+    name: 下限 MLflow 3.9.0 で import (${{ matrix.ch }})
+    runs-on: ubuntu-latest
+    # pyproject.toml の下限 (mlflow>=3.9.0) で各章のパッケージが読み込めることを確認する。
+    # uv.lock (3.17.2) で同期したあと、MLflow だけを本書の対象版に入れ替える。
+    if: |
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.head_commit.message, '[deps]')
+    strategy:
+      fail-fast: false
+      matrix:
+        ch: [ch4, ch5, ch6, ch7, ch8]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: uv をインストール
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: uv sync のあと MLflow を 3.9.0 に入れ替え
+        working-directory: ${{ matrix.ch }}
+        run: |
+          uv sync
+          uv pip install "mlflow==3.9.0" "mlflow-skinny==3.9.0" "mlflow-tracing==3.9.0"
+
+      - name: 各章のパッケージを import
+        working-directory: ${{ matrix.ch }}
+        env:
+          OPENAI_API_KEY: dummy-key-for-import-test
+          EXA_API_KEY: dummy-key-for-import-test
+          ENABLE_WEB_SEARCH: "false"
+        # uv run は lock に合わせて同期し直すため、.venv の python を直接使う
+        run: |
+          .venv/bin/python - <<'PY'
+          import importlib
+          import os
+          import sys
+
+          import mlflow
+
+          assert mlflow.__version__ == "3.9.0", mlflow.__version__
+          # 第8章の 02 / 03 で使う関数。3.9 にもあることを確認する
+          assert hasattr(mlflow, "flush_trace_async_logging")
+
+          fails = []
+          for name in ["agents", "prompts", "evaluation", "monitoring", "serving", "gateway", "deploy"]:
+              if not os.path.isdir(name):
+                  continue
+              try:
+                  importlib.import_module(name)
+                  print("OK ", name)
+              except Exception as e:
+                  fails.append(name)
+                  print("NG ", name, "->", type(e).__name__, e)
+          sys.exit(1 if fails else 0)
+          PY

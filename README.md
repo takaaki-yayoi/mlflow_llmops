@@ -50,7 +50,23 @@ MLflow を活用した LLM アプリケーションの開発・運用 (LLMOps) �
 | 2026年4月 (本書発行時) | MLflow 3.9 | 本書の対象版 |
 | 2026年11月 | MLflow 3.17.2 | ch4〜ch8 の `uv.lock` はこの版に固定。ch9 のノートブックもこの版で実行確認 |
 
-各章の `pyproject.toml` の下限は本書の対象版 (`mlflow>=3.9.0`) のままにしており、3.9 でも動く形で修正しています。3.9 から 3.17 までの変更への対応内容と補足サンプルの説明は、各章の `CHAPTER_NOTES.md` の末尾 (2026年11月の項) に書いています。
+各章の `pyproject.toml` の下限は本書の対象版 (`mlflow>=3.9.0`) のままにしており、3.9 でも動く形で修正しています。3.9 から 3.17 までの変更への対応内容と補足サンプルの説明は、各章の `CHAPTER_NOTES.md` の末尾 (2026年11月の項) に書いています。3.10 から 3.17 までの変更をバージョン順にたどった解説は、Qiita 記事「[『MLflowで実践するLLMOps』の出版後、MLflow 3.10〜3.17で変わったことをサンプルコードを直しながらなぞる](https://qiita.com/taka_yayoi/items/e38da57b6ae0baa17bb9)」にまとめています。
+
+### 本書のコードを MLflow 3.10 以降で動かすとき
+
+本書のコードを書き写して動かす場合や、`pip install mlflow` で最新版を入れた環境で動かす場合は、次の箇所がそのままでは動かないか、警告が出ます。本リポジトリのコードはいずれも対応済みです。
+
+| 章 | 本書の箇所 | 起きること | 対処 | 変わった版 |
+| --- | --- | --- | --- | --- |
+| 第6章 | 6.3.4 項、リスト6.11 (GEPA による最適化) | `ModuleNotFoundError: No module named 'litellm'` | `litellm` を別途インストールする | 3.11 |
+| 第7章 | 7.4 節 (Legacy 方式の AI Gateway) | `mlflow gateway start` で `FutureWarning` (非推奨) が出る。動作はする | 7.4 節の新方式 (Tracking Server 統合型) を使う | 3.17.2 で確認 |
+| 第8章 | リスト8.9 (トークン使用量の取得) | `mlflow.get_trace()` が None を返す | `mlflow.get_trace()` の前に `mlflow.flush_trace_async_logging()` を呼ぶ | 3.12 |
+| 第8章 | リスト8.10 (フィードバックの記録) | LLM の呼び出し直後に記録すると `Trace with ID '...' not found` | `mlflow.log_feedback()` の前に `mlflow.flush_trace_async_logging()` を呼ぶ | 3.12 |
+| 第9章 | リスト9.3、リスト9.11、9.3.5 項 | `log_model` の `artifact_path` で非推奨の警告が出る | `artifact_path="model"` を `name="model"` に読み替える | 3.0 |
+
+それぞれの詳しい理由は、各章の `CHAPTER_NOTES.md` の2026年11月の項を参照してください。
+
+このほか、Claude Code などのコーディングエージェントからスクリプトを実行すると、MLflow 3.16 以降では `import mlflow` のときに MLflow のスキルを案内するログが1行出ます。エージェント向けの案内で、処理には影響しません。人がターミナルで実行するときは出ません。各章の `Makefile` では `MLFLOW_DISABLE_AGENT_HINT=1` を設定して、このログを止めています。
 
 ### 本書以降の新機能の補足サンプル
 

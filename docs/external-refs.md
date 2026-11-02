@@ -26,7 +26,7 @@ URL: https://milvus.io/docs/milvus_lite.md
 
 ## MLflow Tracing 概要
 
-URL: https://mlflow.org/docs/latest/llms/tracing/index.html
+URL: https://mlflow.org/docs/latest/genai/tracing/quickstart/
 
 **要約**: LLM アプリの実行を span のツリーとして可視化する MLflow の機能。autolog による自動トレース、`@mlflow.trace` デコレータによる手動計装の 2 系統がある。
 
@@ -34,7 +34,7 @@ URL: https://mlflow.org/docs/latest/llms/tracing/index.html
 
 ## mlflow.langchain.autolog
 
-URL: https://mlflow.org/docs/latest/llms/langchain/autologging.html
+URL: https://mlflow.org/docs/latest/genai/tracing/integrations/listing/langgraph/
 
 **要約**: LangChain / LangGraph の各種コール (LLM 呼び出し、ツール呼び出し、各ノード) を MLflow に自動記録する。
 
@@ -44,7 +44,7 @@ URL: https://mlflow.org/docs/latest/llms/langchain/autologging.html
 
 ## mlflow.genai.evaluate
 
-URL: https://mlflow.org/docs/latest/llms/genai/evaluation.html
+URL: https://mlflow.org/docs/latest/genai/eval-monitor/
 
 **要約**: LLM アプリ向けの評価エントリポイント。スコアラーのリストとデータセットを渡すと、各サンプルに対するスコアと総合結果を MLflow に記録する。
 
@@ -52,7 +52,7 @@ URL: https://mlflow.org/docs/latest/llms/genai/evaluation.html
 
 ## 標準スコアラー (Built-in Scorers)
 
-URL: https://mlflow.org/docs/latest/llms/genai/scorers/built-in.html
+URL: https://mlflow.org/docs/latest/genai/eval-monitor/scorers/llm-judge/predefined/
 
 **要約**: ToolUsage、Correctness、Safety、Guidelines、ConversationCompleteness、UserFrustration などが MLflow に同梱されている。
 
@@ -60,7 +60,9 @@ URL: https://mlflow.org/docs/latest/llms/genai/scorers/built-in.html
 
 ## カスタムスコアラー (`@scorer` / `make_judge`)
 
-URL: https://mlflow.org/docs/latest/llms/genai/scorers/custom.html
+URL: https://mlflow.org/docs/latest/genai/eval-monitor/scorers/custom/ (`@scorer`)
+
+URL: https://mlflow.org/docs/latest/genai/eval-monitor/scorers/llm-judge/custom-judges/create-custom-judge/ (`make_judge`)
 
 **要約**: ルールベースのスコアラーは `@scorer` デコレータ、LLM ジャッジは `make_judge()` で定義する。
 
@@ -68,7 +70,7 @@ URL: https://mlflow.org/docs/latest/llms/genai/scorers/custom.html
 
 ## 会話シミュレーション (`mlflow.genai.simulate_session`)
 
-URL: https://mlflow.org/docs/latest/llms/genai/simulation.html
+URL: https://mlflow.org/docs/latest/genai/eval-monitor/running-evaluation/conversation-simulation/
 
 **要約**: ペルソナと目標を与えると、LLM が複数ターンの会話を生成してくれる API。会話評価のテストデータを自動生成できる。
 
@@ -76,7 +78,7 @@ URL: https://mlflow.org/docs/latest/llms/genai/simulation.html
 
 ## サードパーティ評価ライブラリの統合
 
-URL: https://mlflow.org/docs/latest/llms/genai/scorers/third-party.html
+URL: https://mlflow.org/docs/latest/genai/eval-monitor/scorers/third-party/
 
 **要約**: DeepEval、RAGAS のスコアラーを MLflow の評価パイプラインに組み込める。MLflow 3.8.0 以降で利用可能。
 
@@ -86,7 +88,7 @@ URL: https://mlflow.org/docs/latest/llms/genai/scorers/third-party.html
 
 ## Prompt Registry の概要
 
-URL: https://mlflow.org/docs/latest/llms/prompt-registry/index.html
+URL: https://mlflow.org/docs/latest/genai/prompt-registry/
 
 **要約**: MLflow にプロンプトをバージョン管理対象として登録できる機能。エイリアス (`production`, `staging` 等) でライフサイクルを管理する。
 
@@ -94,7 +96,7 @@ URL: https://mlflow.org/docs/latest/llms/prompt-registry/index.html
 
 ## MetaPrompt / GEPA による自動最適化
 
-URL: https://mlflow.org/docs/latest/llms/prompt-registry/optimization.html
+URL: https://mlflow.org/docs/latest/genai/prompt-registry/optimize-prompts/
 
 **要約**: 評価データセットと評価関数を与えると、MLflow がプロンプトを反復改善する。MetaPrompt は構造改善、GEPA は遺伝的最適化。
 
@@ -102,7 +104,7 @@ URL: https://mlflow.org/docs/latest/llms/prompt-registry/optimization.html
 
 ## モデルパラメータの紐付け
 
-URL: https://mlflow.org/docs/latest/llms/prompt-registry/model-config.html
+URL: https://mlflow.org/docs/latest/genai/prompt-registry/ (Model Configuration の節)
 
 **要約**: プロンプトに `temperature`、`max_tokens` などのモデルパラメータを紐付けて登録できる。プロンプトと推論設定を一体で管理できる。
 
@@ -112,7 +114,7 @@ URL: https://mlflow.org/docs/latest/llms/prompt-registry/model-config.html
 
 ## Agent Server
 
-URL: https://mlflow.org/docs/latest/llms/agents/serving.html
+URL: https://mlflow.org/docs/latest/genai/serving/agent-server/
 
 **要約**: `@invoke` でエージェントを定義し、`mlflow agent serve` で REST エンドポイントとして公開できる仕組み。
 
@@ -120,17 +122,17 @@ URL: https://mlflow.org/docs/latest/llms/agents/serving.html
 
 ## AI Gateway (Tracking Server 統合型 / 新方式)
 
-URL: https://mlflow.org/docs/latest/llms/gateway/index.html
+URL: https://mlflow.org/docs/latest/genai/governance/ai-gateway/
 
 **要約**: 複数 LLM プロバイダへのアクセスを 1 つのエンドポイントに集約する機能。コスト管理・レート制限・キー管理をゲートウェイ側に寄せられる。MLflow 3.10 以降は Tracking Server に統合されている。
 
-**読みどころ**: 本書 7.4 節は新方式が前提。MLflow 3.9.0 以下で動かす場合は、本リポジトリの `gateway/gateway_config.yaml` を使う Legacy 方式 (下記) を参照。
+**読みどころ**: 本書 7.4 節は新方式が前提。本リポジトリの `gateway/gateway_config.yaml` を使う Legacy 方式 (下記) は互換性のために残しています。
 
 ## AI Gateway (Legacy 方式)
 
-URL: https://mlflow.org/docs/3.9.0/llms/gateway/index.html
+URL: https://mlflow.org/docs/latest/genai/governance/ai-gateway/setup/
 
-**要約**: `mlflow gateway start --config-path <yaml>` で別プロセス起動する旧方式。MLflow 3.9.x まで。
+**要約**: `mlflow gateway start --config-path <yaml>` で別プロセス起動する旧方式。MLflow 3.17.2 でも起動しますが非推奨で、起動時に `FutureWarning` が出ます。
 
 **読みどころ**: 本リポジトリ ch7 の `make gateway-legacy` で起動する方式の出典。
 
@@ -146,7 +148,7 @@ URL: https://docs.databricks.com/en/generative-ai/agent-framework/index.html
 
 ## トレースのメタデータ追加
 
-URL: https://mlflow.org/docs/latest/llms/tracing/api.html#metadata
+URL: https://mlflow.org/docs/latest/genai/tracing/attach-tags/
 
 **要約**: `mlflow.update_current_trace()` でトレースに `tags`、`request_id`、`session_id` などのメタデータを付与できる。本番運用での集計・絞り込みに必須。
 
@@ -154,25 +156,25 @@ URL: https://mlflow.org/docs/latest/llms/tracing/api.html#metadata
 
 ## トークン使用量とコスト
 
-URL: https://mlflow.org/docs/latest/llms/tracing/cost.html
+URL: https://mlflow.org/docs/latest/genai/tracing/token-usage-cost/
 
-**要約**: トレースから `usage` 情報 (input/output tokens) と推定コストを取り出すことができる。プロバイダ別にコストレートが事前定義されている。
+**要約**: トレースから `usage` 情報 (input/output tokens) を取り出せる。MLflow 3.10 以降は、自動トレーシングで記録した LLM 呼び出しのコスト (USD) も `trace.info.cost` に記録される。
 
-**読みどころ**: ch8 8.2 節 (`make cost`) の実体。
+**読みどころ**: ch8 8.2 節 (`make cost`) の実体。3.10 以降の組み込みのコストは `make cost-builtin` で試せます。
 
 ## OpenTelemetry エクスポート
 
-URL: https://mlflow.org/docs/latest/llms/tracing/opentelemetry.html
+URL: https://mlflow.org/docs/latest/genai/tracing/opentelemetry/export/
 
 **要約**: MLflow のトレースを OTLP 経由で任意の OTel バックエンド (Datadog、New Relic、Grafana Tempo など) に送出できる。
 
-**読みどころ**: ch8 8.5 節 (`make otel`) の前提。社内の APM に統合したい場合に。
+**読みどころ**: ch8 8.5 節 (`make otel`) の前提。社内の APM に統合したい場合に。MLflow 3.11 以降は、`MLFLOW_ENABLE_OTEL_GENAI_SEMCONV=true` で OpenTelemetry の GenAI セマンティック規約に変換して送れます (`make otel-semconv`)。
 
 # 第9章 チュートリアル
 
 ## Models from Code
 
-URL: https://mlflow.org/docs/latest/models/models-from-code.html
+URL: https://mlflow.org/docs/latest/ml/model/models-from-code/
 
 **要約**: Python ファイルそのものを MLflow Model として登録できる機能。サービング時にコードがそのまま実行される。
 
@@ -180,7 +182,7 @@ URL: https://mlflow.org/docs/latest/models/models-from-code.html
 
 ## カスタム PyFunc モデル
 
-URL: https://mlflow.org/docs/latest/models/python_function.html
+URL: https://mlflow.org/docs/latest/ml/model/python_model/
 
 **要約**: 任意の Python 関数を MLflow Model として包む方法。シグネチャ、入力例、依存関係を一緒に保存できる。
 
@@ -188,11 +190,39 @@ URL: https://mlflow.org/docs/latest/models/python_function.html
 
 ## ResponsesAgent インターフェース
 
-URL: https://mlflow.org/docs/latest/llms/agents/responses-agent.html
+URL: https://mlflow.org/docs/latest/genai/serving/responses-agent/
 
 **要約**: マルチエージェントを単一エンドポイントの背後に置くための統一インターフェース。OpenAI Responses API 互換のレスポンスを返す。
 
 **読みどころ**: 9.3 ノートブックでスーパーバイザー型マルチエージェントを実装する前に。
+
+# 本書以降の機能 (補足サンプル)
+
+本書の発行後に MLflow に追加され、本リポジトリの補足サンプルで扱っている機能の公式ドキュメントです。いずれも本書の対象版 (3.9) にはありません。
+
+## スパンのログレベル (MLflow 3.13 以降)
+
+URL: https://mlflow.org/docs/latest/genai/tracing/app-instrumentation/logging/
+
+**要約**: スパンに DEBUG / INFO / WARNING / ERROR / CRITICAL のログレベルが付く。指定しなければスパンの種類で決まり、例外が起きたスパンは ERROR になる。
+
+**読みどころ**: ch4 の `make log-level` の前に。
+
+## `@mlflow.test` によるリグレッションテスト (MLflow 3.14 以降)
+
+URL: https://mlflow.org/docs/latest/genai/eval-monitor/regression-testing/
+
+**要約**: pytest のテスト関数に `@mlflow.test` を付け、`mlflow.genai.evaluate()` の結果を `assert result.passed, result.reason` で判定する。pytest プラグインの有効化が必要。
+
+**読みどころ**: ch5 の `make test-regression` の前に。プラグインの有効化の方法は、本リポジトリでは `tests/conftest.py` の `pytest_plugins` で行っています。
+
+## 問題検出 (Issue detection、MLflow 3.11 以降)
+
+URL: https://mlflow.org/docs/latest/genai/eval-monitor/ai-insights/detect-issues/
+
+**要約**: 選んだトレースを LLM がまとめて分析し、失敗のパターンを「問題」として分類する。MLflow UI の Traces タブの「Detect Issues」から実行する。
+
+**読みどころ**: ch8 の手順 ([ch8/CHAPTER_NOTES.md](../ch8/CHAPTER_NOTES.md)) を試す前に。トレースの数に応じて LLM の費用がかかります。
 
 # 全章共通
 
@@ -202,11 +232,11 @@ URL: https://github.com/mlflow/mlflow/releases
 
 **要約**: MLflow の各バージョンで追加 / 変更された機能の一覧。本書記述と挙動が違う場合、まずリリースノートで該当機能のバージョンを確認するのが近道。
 
-**読みどころ**: 本書執筆時点は MLflow 3.9.0 前後を基準にしています。3.10 以降の機能 (`mlflow.search_sessions`、新方式 AI Gateway 等) は本書未収録ですが、リリースノートでフォロー可能。
+**読みどころ**: 本書執筆時点は MLflow 3.9.0 前後を基準にしています。3.10 以降の変更のうち本書のコードに影響するものは [README](../README.md) の「本書のコードを MLflow 3.10 以降で動かすとき」に、補足サンプルの一覧は同じ README の「本書以降の新機能の補足サンプル」にまとめています。
 
 ## MLflow GenAI 全体ドキュメント
 
-URL: https://mlflow.org/docs/latest/llms/index.html
+URL: https://mlflow.org/docs/latest/genai/
 
 **要約**: GenAI 関連機能 (Tracing / Evaluation / Prompt Registry / AI Gateway) のエントリポイント。各章の上位概念を俯瞰したいときに。
 
