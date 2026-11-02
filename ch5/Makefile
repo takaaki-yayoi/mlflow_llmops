@@ -1,4 +1,4 @@
-.PHONY: install ingest vibe-check test-standard test-custom register eval sim eval-all cli clean help
+.PHONY: install ingest vibe-check test-standard test-custom register eval sim test-regression eval-all cli clean help
 
 # MLflow 3.16以降、import mlflow のたびにコーディングエージェント向けの案内
 # (mlflow.agent.hint) がログに出るため、サンプル実行時は抑制する
@@ -18,6 +18,9 @@ help:
 	@echo "  make register       5.4.6: スコアラーをMLflowに登録"
 	@echo "  make eval           5.5-5.6: 自動評価の実行 (メインスクリプト)"
 	@echo "  make sim            5.7: [応用] 会話シミュレーション"
+	@echo ""
+	@echo "本書以降の新機能 (MLflow 3.14以降):"
+	@echo "  make test-regression  評価をpytestのリグレッションテストとして実行 (@mlflow.test)"
 	@echo ""
 	@echo "一括実行:"
 	@echo "  make eval-all       vibe-check → eval を順番に実行"
@@ -58,6 +61,10 @@ eval:
 # 5.7: 会話シミュレーション
 sim:
 	uv run python evaluation/06_conversation_sim.py
+
+# 本書以降の新機能: @mlflow.test (MLflow 3.14以降) で評価をpytestのテストとして実行
+test-regression:
+	uv run pytest tests -v
 
 # 一括実行
 eval-all: vibe-check eval
