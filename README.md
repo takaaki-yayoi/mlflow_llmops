@@ -2,7 +2,16 @@
 
 [![CI](https://github.com/takaaki-yayoi/mlflow_llmops/actions/workflows/ci.yml/badge.svg)](https://github.com/takaaki-yayoi/mlflow_llmops/actions/workflows/ci.yml)
 
-MLflow を活用した LLM アプリケーションの開発・運用 (LLMOps) を学ぶための書籍「MLflowで実践するLLMOps――生成AIアプリケーションの実験管理と品質保証」のサンプルコードリポジトリです。
+MLflow を活用した LLM アプリケーションの開発・運用 (LLMOps) を学ぶための書籍「[MLflowで実践するLLMOps――生成AIアプリケーションの実験管理と品質保証](https://gihyo.jp/book/2026/978-4-297-15573-5)」のサンプルコードリポジトリです。
+
+| 項目 | 内容 |
+| --- | --- |
+| 書名 | エンジニア選書 MLflowで実践するLLMOps――生成AIアプリケーションの実験管理と品質保証 |
+| 著者 | 弥生隆明、渡辺祐貴、大内山浩、平田東夢、河村春孝 |
+| 出版社 | 技術評論社 |
+| 発売日 | 2026年4月20日 |
+| ISBN | 978-4-297-15573-5 |
+| 書籍ページ | https://gihyo.jp/book/2026/978-4-297-15573-5 |
 
 **本文中のコードと差分がある場合、本リポジトリを優先してください。**
 
