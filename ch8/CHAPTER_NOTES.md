@@ -10,6 +10,8 @@
 | `monitoring/03_feedback.py` | 8.3.3 | `make feedback` |
 | `monitoring/04_evaluation.py` | 8.3.4 | `make eval` |
 | `monitoring/05_otel_export.py` | 8.5.3 | `make otel` |
+| `monitoring/06_builtin_cost.py` | 8.2 の補足 (MLflow 3.10以降) | `make cost-builtin` |
+| `monitoring/07_otel_genai_semconv.py` | 8.5 の補足 (MLflow 3.11以降) | `make otel-semconv` |
 
 # 8.1 本番環境でのトレースベース監視
 
@@ -110,6 +112,35 @@
   - OSS MLflow: `MLFLOW_TRACE_ENABLE_OTLP_DUAL_EXPORT=true`
   - Databricks: `MLFLOW_ENABLE_DUAL_EXPORT=true`
   - 環境によって変数名が異なる点は本書の表8.16にも記載されています。
+
+# MLflow 3.10以降の変更への対応 (2026年11月)
+
+## 非同期トレースログ (MLflow 3.12) と 02 / 03 の修正
+
+MLflow 3.12 で、OSS の MLflow でもトレースが既定で非同期に書き込まれるようになりました (mlflow/mlflow#22304)。そのため、LLM を呼び出した直後に `mlflow.get_trace()` や `mlflow.log_feedback()` を呼ぶと、トレースがまだ Tracking Server に届いていないことがあります。修正前のコードを 3.12 以降で実行すると、次のエラーで止まります。
+
+- `make cost`: `AttributeError: 'NoneType' object has no attribute 'info'` (`get_trace()` が None を返す)
+- `make feedback`: `RESOURCE_DOES_NOT_EXIST: Trace with ID '...' not found.`
+
+`02_token_and_cost.py` と `03_feedback.py` では、トレース ID を取得した直後に `mlflow.flush_trace_async_logging()` を呼ぶように修正しました。本書のリスト8.9 のトークン使用量を取得する部分を写して動かす場合は、`mlflow.get_trace()` の前に同じ1行を足してください。リスト8.10 も、LLM を呼び出した直後にフィードバックを記録する場合は同じです。
+
+この関数は MLflow 3.9 にもあり、修正後のコードは 3.9 でも動きます。ただし 3.9 では非同期ログが無効のため、`Failed to flush trace async logging` という ERROR のログが出ます。処理には影響しません。
+
+## 本書以降の新機能の補足サンプル
+
+### 組み込みのコスト `trace.info.cost` (MLflow 3.10以降)
+
+- **対応ファイル**: `monitoring/06_builtin_cost.py`
+- **実行**: `make cost-builtin`
+- **内容**: 8.2.3 では、トークン数から自前の料金表 (`cost_calculator.py`) でコストを計算しました。3.10 以降は、自動トレーシングで記録した LLM 呼び出しのコストを MLflow が計算し、`trace.info.cost` (`input_cost` / `output_cost` / `total_cost`、単位は USD) に入れます。8.2.4 で紹介した Overview ダッシュボードの Usage ビューのコストを、コードから取り出す方法にあたります。スクリプトでは、同じ呼び出しについて組み込みのコストと `cost_calculator.py` の結果を並べて表示します
+- **料金データ**: litellm の料金データから引かれます。3.11 以降は litellm が入っていない環境でも、MLflow に同梱された料金データで計算されます (mlflow/mlflow#22046)
+- **`cost_calculator.py` の扱い**: 契約価格や自社ホストのモデルなど、MLflow の料金データにない単価で計算したい場合のために残しています
+
+### OpenTelemetry GenAI セマンティック規約でのエクスポート (MLflow 3.11以降)
+
+- **対応ファイル**: `monitoring/07_otel_genai_semconv.py`
+- **実行**: `make otel-semconv`
+- **内容**: 8.5 のデュアルエクスポートで送られるスパンの属性名は、`mlflow.spanInputs` などの MLflow 独自のものです。環境変数 `MLFLOW_ENABLE_OTEL_GENAI_SEMCONV=true` を設定すると、OpenTelemetry の GenAI セマンティック規約 (`gen_ai.request.model`、`gen_ai.usage.input_tokens` など) に変換して送ります。スクリプトは Collector の代わりに受信したスパンを表示するだけの小さな OTLP 受信サーバーを起動し、同じ LLM 呼び出しを変換なしと変換ありの2通りで送って属性を見比べます。Collector や Docker は不要です
 
 # 全体的な注意事項
 

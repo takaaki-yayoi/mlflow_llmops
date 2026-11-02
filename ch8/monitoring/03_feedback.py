@@ -57,6 +57,8 @@ for item in questions_and_feedback:
     )
 
     trace_id = mlflow.get_last_active_trace_id()
+    # MLflow 3.12以降はトレースが非同期で書き込まれるため、フィードバック記録前にフラッシュする
+    mlflow.flush_trace_async_logging()
     answer = response.choices[0].message.content
     print(f"Q: {item['question']}")
     print(f"A: {answer[:80]}...")

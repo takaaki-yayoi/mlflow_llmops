@@ -1,4 +1,8 @@
-.PHONY: help setup tracing cost feedback eval otel all
+.PHONY: help setup tracing cost feedback eval otel cost-builtin otel-semconv all
+
+# MLflow 3.16以降、import mlflow のたびにコーディングエージェント向けの案内
+# (mlflow.agent.hint) がログに出るため、サンプル実行時は抑制する
+export MLFLOW_DISABLE_AGENT_HINT := 1
 
 help:
 	@echo "ch8 監視と運用"
@@ -11,6 +15,10 @@ help:
 	@echo "  make eval     8.3: 品質評価パイプライン"
 	@echo "  make otel     8.5: OpenTelemetry設定確認"
 	@echo "  make all      全ステップ実行 (tracing cost feedback eval)"
+	@echo ""
+	@echo "本書以降の新機能:"
+	@echo "  make cost-builtin  組み込みのコスト trace.info.cost (MLflow 3.10以降)"
+	@echo "  make otel-semconv  OTel GenAIセマンティック規約でのエクスポート (MLflow 3.11以降)"
 
 setup:
 	uv sync
@@ -36,6 +44,14 @@ eval:
 # 8.5: OpenTelemetry設定確認
 otel:
 	uv run python monitoring/05_otel_export.py
+
+# 本書以降の新機能: 組み込みのコスト (MLflow 3.10以降)
+cost-builtin:
+	uv run python monitoring/06_builtin_cost.py
+
+# 本書以降の新機能: OTel GenAIセマンティック規約でのエクスポート (MLflow 3.11以降)
+otel-semconv:
+	uv run python monitoring/07_otel_genai_semconv.py
 
 # 全ステップ実行
 all: tracing cost feedback eval

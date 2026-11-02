@@ -84,6 +84,16 @@ uv run --prerelease allow mlflow server --host 0.0.0.0 --port 5000
 
 ブラウザでは `http://localhost:5000` でアクセスしてください (`0.0.0.0` ではアクセスできない場合があります)。
 
+# MLflow 3.10以降の変更と既存の不具合への対応 (2026年11月)
+
+3本のノートブックは `%pip install` で最新の MLflow を入れるため、MLflow 3.17.2 で実行して確認しました。
+
+- **`log_model` の `artifact_path` を `name` に変更 (9.1 / 9.2 / 9.3)**: `artifact_path` は MLflow 3.x で非推奨になり、警告が出ていました。本書のリスト9.3、リスト9.11、9.3.5 項のコードで `artifact_path="model"` と書かれている箇所は、`name="model"` と読み替えてください。`name` は MLflow 3.0 以降で使えます
+- **9.1 のサービングのポートを本書と同じ 8080 に変更**: ノートブックの `mlflow models serve` が `-p 5000` になっており、Tracking Server と同じポートのため、Tracking Server を起動したままでは動きませんでした。本書 9.1.5 項のとおり `-p 8080` にしています。あわせて次の2点を追加しています
+  - `%%sh` セルはノートブックの `mlflow.set_tracking_uri()` を引き継がないため、`MLFLOW_TRACKING_URI=http://localhost:5000` を付けて `models:/` の参照先を指定
+  - 既定の `--env-manager virtualenv` は pyenv が必要で環境の構築にも時間がかかるため、ノートブックと同じ環境で動かす `--env-manager local` を指定
+- **9.2 のタグ `question` が記録されていなかった**: `mlflow.update_current_trace(tags={"question": ...})` をトレースの外で呼んでいたため、「No active trace found」の警告が出てタグが付いていませんでした。単発実行のセルでは `@mlflow.trace` を付けた関数の中で呼ぶ形に直し、評価の `predict_wrapper` からは削除しました。質問はトレースの入力として記録されます。本書のリスト9.10 とリスト9.12 には、もともとこの行はありません。なお、LangGraph のノードの中で呼んでいる `route_decision` などのタグは、修正前から正しく記録されています
+
 # 全体的な注意事項
 
 - 第9章は本書の「実践ケーススタディ」章として構成されており、3つの応用テーマを実践形式で学べる内容です。

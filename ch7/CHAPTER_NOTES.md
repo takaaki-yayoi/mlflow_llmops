@@ -75,6 +75,14 @@
   - リスト7.12 (FastAPIラッパー): 別途 FastAPI プロジェクトを起動し、AI Gateway もしくは Agent Server を呼び出してください。
   - リスト7.13 (Gradio): `pip install gradio` 後、本書のコードをそのまま実行できます。
 
+# MLflow 3.10以降の変更への対応 (2026年11月)
+
+## Legacy 方式の AI Gateway (`make gateway-legacy`)
+
+MLflow 3.17.2 でも `mlflow gateway start` は起動し、`gateway/gateway_config.yaml` のエンドポイントも使えます。ただし非推奨になっており、起動時に `FutureWarning: mlflow.gateway.cli.start is deprecated` が表示されます。Legacy 方式のドキュメントは MLflow 3.11 で削除され、新 AI Gateway のページに統合されました。本書 7.4 節が解説している新方式 (Tracking Server 統合型) を使ってください。
+
+新 AI Gateway には、本書の発行後に予算の上限設定 (3.11) やガードレール (3.12) が追加されています。いずれも主に MLflow UI の Gateway 画面から設定します。
+
 # 全体的な注意事項
 
 - 本書の本文コードは「読んで理解するため」の抜粋です。実行可能な完全版は本リポジトリを参照してください。

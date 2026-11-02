@@ -19,4 +19,3 @@ mlartifacts/
 .scrapy_cache/
 
 # uv
-uv.lock

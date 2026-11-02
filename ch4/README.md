@@ -87,6 +87,7 @@ make cli
 | `make install` | 依存関係をインストール |
 | `make ingest` | ドキュメントをベクトルストアに取り込み |
 | `make cli` | CLIエージェントを起動 |
+| `make log-level` | 補足: スパンのログレベル (MLflow 3.13以降) |
 | `make clean` | 生成されたファイルを削除 |
 
 ## ファイル構成

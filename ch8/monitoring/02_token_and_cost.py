@@ -46,6 +46,8 @@ for model, prompt in models_and_prompts:
 
     # トレースからトークン使用量を取得
     trace_id = mlflow.get_last_active_trace_id()
+    # MLflow 3.12以降はトレースが非同期で書き込まれるため、取得前にフラッシュする
+    mlflow.flush_trace_async_logging()
     trace = mlflow.get_trace(trace_id=trace_id)
     usage = trace.info.token_usage
 

@@ -72,6 +72,16 @@
 - **コスト注意**: GEPAはLLMを多数回呼び出すため、実行コストが高く時間がかかります。`max_metric_calls` で呼び出し回数を制限してください。
 - **追加スクリプト (本書未掲載)**: リポジトリには `prompts/05_optimize_metaprompt.py` も収録しています。これは MetaPromptOptimizer によるプロンプト構造改善の例で、ゼロショットでも動作する高速版です。本書では GEPA のみ言及されていますが、コスト・時間の制約がある場合は MetaPrompt の利用を検討してください。
 
+# MLflow 3.10以降の変更への対応 (2026年11月)
+
+## `mlflow[genai]` から litellm と gepa が外れた (MLflow 3.11)
+
+MLflow 3.11 で、`mlflow[genai]` の extras から litellm と gepa が外れました (mlflow/mlflow#22059)。gepa は `pyproject.toml` に明記していましたが、gepa は内部で litellm を使います。そのため、MLflow 3.11 以降で `make optimize-gepa` を実行すると `ModuleNotFoundError: No module named 'litellm'` で止まっていました。
+
+`pyproject.toml` の依存に `litellm` を追加して解消しています。自分の環境で `pip install "mlflow[genai]"` から始める場合は、`litellm` と `gepa` を別途インストールしてください。
+
+`make optimize-meta` (MetaPromptOptimizer) は 3.11 以降 litellm なしでも動くようになっています (mlflow/mlflow#22233)。
+
 # 全体的な注意事項
 
 - 本書の本文コードは「読んで理解するため」の抜粋です。実行可能な完全版は本リポジトリを参照してください。

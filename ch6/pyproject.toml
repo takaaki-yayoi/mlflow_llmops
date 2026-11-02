@@ -10,12 +10,15 @@ readme = "README.md"
 requires-python = ">=3.10"
 
 dependencies = [
-    # MLflow（genai extrasでlitellm等を含む）
+    # MLflow（genai extras）
     "mlflow[genai]>=3.9.0",
     # LLM
     "openai>=1.0.0",
     # プロンプト最適化（GEPA）
+    # MLflow 3.11以降、genai extrasにlitellmとgepaが含まれなくなったため明記する。
+    # gepaは内部でlitellmを使う
     "gepa>=0.0.18",
+    "litellm>=1.0.0",
     # ユーティリティ
     "pydantic>=2.0.0",
     "python-dotenv>=1.0.0",

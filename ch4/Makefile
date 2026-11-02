@@ -1,4 +1,8 @@
-.PHONY: cli install ingest clean help
+.PHONY: cli install ingest log-level clean help
+
+# MLflow 3.16以降、import mlflow のたびにコーディングエージェント向けの案内
+# (mlflow.agent.hint) がログに出るため、サンプル実行時は抑制する
+export MLFLOW_DISABLE_AGENT_HINT := 1
 
 help:
 	@echo "MLflow Sample Agent"
@@ -8,6 +12,9 @@ help:
 	@echo "  make ingest   データ取り込みスクリプトを実行する"
 	@echo "  make cli      CLIを起動する"
 	@echo "  make clean    生成されたファイルを削除する"
+	@echo ""
+	@echo "本書以降の新機能:"
+	@echo "  make log-level  スパンのログレベル (MLflow 3.13以降)"
 
 install:
 	uv sync
@@ -17,6 +24,10 @@ cli:
 
 ingest:
 	uv run python scripts/web_ingest.py
+
+# 本書以降の新機能: スパンのログレベル (MLflow 3.13以降)
+log-level:
+	uv run python -m tracing.span_log_level
 
 clean:
 	rm -rf data/milvus.db

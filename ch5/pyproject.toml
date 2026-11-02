@@ -35,10 +35,17 @@ dependencies = [
     # 評価 (第5章で追加)
     "pandas>=2.0.0",
     "litellm>=1.0.0",
+    # @mlflow.test によるリグレッションテスト (tests/、MLflow 3.14以降)
+    "pytest>=8.0.0",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = ["agents", "cli", "scripts", "evaluation"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# agents / evaluation パッケージを tests から import できるようにする
+pythonpath = ["."]
 
 [[tool.uv.index]]
 name = "pypi"
