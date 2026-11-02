@@ -17,4 +17,3 @@ mlartifacts/
 mlruns/
 
 # uv
-uv.lock
