@@ -181,6 +181,13 @@ def main():
             # 回答をストリーミング表示
             stream_text(response, color=AQUA)
 
+        except EOFError:
+            # Ctrl+D、またはパイプ入力の終端に達した場合は終了する
+            # (捕捉しないと下の except Exception でエラー表示を繰り返し、ループが止まらない)
+            sys.stdout = original_stdout
+            print("\nさようなら！")
+            break
+
         except KeyboardInterrupt:
             # Ctrl+C が押された場合の処理
             sys.stdout = original_stdout
