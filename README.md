@@ -62,6 +62,7 @@ MLflow を活用した LLM アプリケーションの開発・運用 (LLMOps) �
 | 第5章 | `@mlflow.test` による評価のリグレッションテスト | 3.14以降 | `make test-regression` |
 | 第8章 | トレースに記録される組み込みのコスト (`trace.info.cost`) | 3.10以降 | `make cost-builtin` |
 | 第8章 | OpenTelemetry GenAI セマンティック規約でのエクスポート | 3.11以降 | `make otel-semconv` |
+| 第8章 | 問題検出 (Issue detection) | 3.11以降 | MLflow UI の「Detect Issues」([ch8/CHAPTER_NOTES.md](ch8/CHAPTER_NOTES.md) に手順) |
 
 ## 前提条件
 
