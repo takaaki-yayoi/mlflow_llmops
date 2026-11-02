@@ -3,8 +3,12 @@
 エージェントのトレースには、LLM 呼び出しやツール呼び出しのほかに、LangGraph の
 内部処理などの細かいスパンが大量に並びます。MLflow 3.13 で、スパンに Python の
 logging と同じ考え方のログレベル (DEBUG / INFO / WARNING / ERROR / CRITICAL) が
-付くようになりました。MLflow UI のトレース画面で「Minimum log level」を INFO にすると、
-DEBUG のスパンが隠れ、見たいスパンだけが残ります。
+付くようになりました。レベルは各スパンに記録され、span.log_level で取り出せます。
+DEBUG のスパンを除けば、LLM 呼び出しやツール呼び出しなど、見たいスパンだけが残ります。
+
+注意: MLflow 3.17.2 の時点では、MLflow UI の標準のトレース画面 (Traces タブ) に、
+ログレベルでスパンを絞り込む操作は表示されません。このスクリプトでは、
+記録されたレベルを API で取り出して一覧表示します。
 
 ログレベルの決まり方:
 - 何も指定しない場合は、スパンの種類から決まる。LLM / CHAT_MODEL / TOOL / RETRIEVER /
@@ -85,5 +89,5 @@ except ValueError as e:
     print(f"例外: {e}")
 print_spans(mlflow.get_last_active_trace_id())
 
-print("\nMLflow UI (http://localhost:5000) のトレース画面で「Minimum log level」を")
-print("INFO に切り替えると、DEBUG のスパンが非表示になります。")
+print("\nINFO 以上のスパンだけを見れば、LLM 呼び出しやツール呼び出しなど、")
+print("エージェントの主な処理だけが残ります。")

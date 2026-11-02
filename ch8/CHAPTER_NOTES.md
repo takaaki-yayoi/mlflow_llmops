@@ -142,6 +142,17 @@ MLflow 3.12 で、OSS の MLflow でもトレースが既定で非同期に書�
 - **実行**: `make otel-semconv`
 - **内容**: 8.5 のデュアルエクスポートで送られるスパンの属性名は、`mlflow.spanInputs` などの MLflow 独自のものです。環境変数 `MLFLOW_ENABLE_OTEL_GENAI_SEMCONV=true` を設定すると、OpenTelemetry の GenAI セマンティック規約 (`gen_ai.request.model`、`gen_ai.usage.input_tokens` など) に変換して送ります。スクリプトは Collector の代わりに受信したスパンを表示するだけの小さな OTLP 受信サーバーを起動し、同じ LLM 呼び出しを変換なしと変換ありの2通りで送って属性を見比べます。Collector や Docker は不要です
 
+### 問題検出 (Issue detection、MLflow 3.11以降)
+
+- **対応ファイル**: なし (MLflow UI の機能)
+- **内容**: 8.3 では、LLM ジャッジやユーザーフィードバックでトレースの品質を測りました。3.11 で追加された問題検出は、選んだトレースを LLM がまとめて読み、失敗のパターンを「問題 (Issue)」として分類して、深刻度、影響を受けたトレースの数、考えられる原因と一緒に示します。どのジャッジを用意すればよいか分からない段階で、まず何が起きているかをつかむのに使えます
+- **手順**:
+  1. `make tracing`、`make cost`、`make feedback` などでトレースを作る
+  2. MLflow UI で実験「ch8-monitoring-quickstart」の Traces タブを開き、右上の「Detect Issues」を押す
+  3. ダイアログでモデル (既定は OpenAI) と対象のトレースを確かめ、「Run Analysis」を押す。初回は API キーを求められ、入力したキーは Settings > LLM Connections に保存される。`.env` の `OPENAI_API_KEY=` の部分を含めずに、キーだけを入力する
+  4. 完了すると、Evaluation runs に種類が「Issue detection」のランができる。Overview タブに要約、Issues タブに問題の一覧が出る。それぞれ Resolve (対応済み) または Reject (問題ではない) に振り分けられる
+- **費用**: 対象のトレースの数に応じて LLM を呼ぶ。本リポジトリの ch8 のトレース10件で、ダイアログの見積もりは $0.03〜$0.10、実際の費用は $0.13 だった
+
 # 全体的な注意事項
 
 - 本書の本文コードは「読んで理解するため」の抜粋です。実行可能な完全版は本リポジトリを参照してください。

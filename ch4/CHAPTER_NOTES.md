@@ -90,7 +90,8 @@ ch3 と共通の差分メモ (ツールの有効・無効、埋め込みモデ�
 
 - **対応ファイル**: `tracing/span_log_level.py`
 - **実行**: `make log-level`
-- **内容**: 4.4.2 で見たように、エージェントのトレースには LangGraph の内部処理などの細かいスパンが大量に並びます。3.13 で、スパンに Python の logging と同じ考え方のログレベル (DEBUG / INFO / WARNING / ERROR / CRITICAL) が付くようになりました。MLflow UI のトレース画面で「Minimum log level」を INFO にすると、DEBUG のスパンが隠れます
+- **内容**: 4.4.2 で見たように、エージェントのトレースには LangGraph の内部処理などの細かいスパンが大量に並びます。3.13 で、スパンに Python の logging と同じ考え方のログレベル (DEBUG / INFO / WARNING / ERROR / CRITICAL) が付くようになりました。レベルは各スパンに記録され、`span.log_level` で取り出せます
+- **UI について**: MLflow 3.17.2 の時点では、MLflow UI の標準のトレース画面 (Traces タブ) に、ログレベルでスパンを絞り込む操作は表示されません。スクリプトは、記録されたレベルを API で取り出して表示します
 - **ログレベルの決まり方**:
   - 何も指定しない場合は、スパンの種類で決まる。LLM / CHAT_MODEL / TOOL / RETRIEVER / AGENT / EMBEDDING は INFO、CHAIN や種類なしは DEBUG
   - `@mlflow.trace(log_level=...)` や `span.set_log_level(...)` で明示的に指定できる
