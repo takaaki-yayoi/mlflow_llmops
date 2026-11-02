@@ -14,9 +14,13 @@
 # 起動方法（Legacy方式）:
 #   mlflow gateway start --config-path gateway/gateway_config.yaml --port 5010
 #
+# 注意:
+#   MLflow 3.17時点でも起動できますが、mlflow gateway start は非推奨で、
+#   起動時に FutureWarning が表示されます。Legacy方式のドキュメントは
+#   MLflow 3.11で削除され、新AI Gatewayのページに統合されました。
+#
 # 参考:
 #   新AI Gateway: https://mlflow.org/docs/latest/genai/governance/ai-gateway/
-#   Legacy方式: https://mlflow.org/docs/latest/genai/governance/ai-gateway/legacy/
 
 endpoints:
   # QAエージェントのLLMバックエンド

@@ -1,5 +1,9 @@
 .PHONY: install ingest vibe-check test-standard test-custom register eval sim eval-all cli clean help
 
+# MLflow 3.16以降、import mlflow のたびにコーディングエージェント向けの案内
+# (mlflow.agent.hint) がログに出るため、サンプル実行時は抑制する
+export MLFLOW_DISABLE_AGENT_HINT := 1
+
 help:
 	@echo "第5章: 改善サイクルを加速する - 評価の仕組み"
 	@echo ""

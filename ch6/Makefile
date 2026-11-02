@@ -1,5 +1,9 @@
 .PHONY: install register version alias eval optimize-meta optimize-gepa deploy model-config structured all clean help
 
+# MLflow 3.16以降、import mlflow のたびにコーディングエージェント向けの案内
+# (mlflow.agent.hint) がログに出るため、サンプル実行時は抑制する
+export MLFLOW_DISABLE_AGENT_HINT := 1
+
 help:
 	@echo "第6章: Prompt Registry - プロンプトエンジニアリングの体系化"
 	@echo ""
