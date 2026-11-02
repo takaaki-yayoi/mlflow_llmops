@@ -151,6 +151,16 @@ uv add deepeval ragas
 
 - **MLflow バージョン**: `mlflow.genai.scorers.deepeval` および `mlflow.genai.scorers.ragas` への組み込みは **MLflow 3.8.0 以降** で利用可能です (本書記載どおり)。
 
+# 本書以降の新機能の補足サンプル (2026年11月)
+
+## `@mlflow.test` による評価のリグレッションテスト (MLflow 3.14以降)
+
+- **対応ファイル**: `tests/conftest.py`、`tests/test_regression.py`
+- **実行**: `make test-regression` (`uv run pytest tests -v` と同じ)
+- **内容**: 5.6 節の `mlflow.genai.evaluate()` を pytest のテストの中で呼び、`assert result.passed, result.reason` で合否を判定します。スコアラーが1つでも不合格ならテストが失敗するので、プロンプトやモデルを変えたときの品質の後退を CI で止められます。pytest の実行ごとに、種類が `test` のランが1つ作られ、各テストの評価がそこにまとまります
+- **プラグインの有効化**: `@mlflow.test` は MLflow の pytest プラグインを有効にしないと動きません。プラグインは自動では読み込まれないため、`tests/conftest.py` に `pytest_plugins = ["mlflow.pytest.plugin"]` を書いています
+- **MLflow 3.17.2 の不具合**: データに `expectations` (`expected_response` など) を含めると、`result.passed` が常に False になります。期待値の列もスコアラーの結果として判定されてしまうためです (mlflow/mlflow#25701、修正 PR #26151 は 2026年11月時点で未マージ)。そのため、このテストでは `Correctness` を使わず、期待値なしで判定できる `RelevanceToQuery` と `has_reference_link` を使っています
+
 # 全体的な注意事項
 
 - 本書本文のコード片は「読んで理解するため」の抜粋であり、実行可能な完全版は本リポジトリにあります。MLflow のバージョンアップに追従するため、リポジトリ側を継続的に更新しています。

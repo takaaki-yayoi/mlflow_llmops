@@ -84,6 +84,19 @@ ch3 と共通の差分メモ (ツールの有効・無効、埋め込みモデ�
 | `.env` の `MLFLOW_TRACKING_URI` を変えても反映されない | `agent.py` が `set_tracking_uri()` で直接指定している | `agent.py` の該当行を書き換える |
 | 既存の experiment と重複している | `set_experiment("MLflow QAエージェント")` で同名の experiment を再利用 | 既存の experiment は維持されます。問題ありません |
 
+# 本書以降の新機能の補足サンプル (2026年11月)
+
+## スパンのログレベル (MLflow 3.13以降)
+
+- **対応ファイル**: `tracing/span_log_level.py`
+- **実行**: `make log-level`
+- **内容**: 4.4.2 で見たように、エージェントのトレースには LangGraph の内部処理などの細かいスパンが大量に並びます。3.13 で、スパンに Python の logging と同じ考え方のログレベル (DEBUG / INFO / WARNING / ERROR / CRITICAL) が付くようになりました。MLflow UI のトレース画面で「Minimum log level」を INFO にすると、DEBUG のスパンが隠れます
+- **ログレベルの決まり方**:
+  - 何も指定しない場合は、スパンの種類で決まる。LLM / CHAT_MODEL / TOOL / RETRIEVER / AGENT / EMBEDDING は INFO、CHAIN や種類なしは DEBUG
+  - `@mlflow.trace(log_level=...)` や `span.set_log_level(...)` で明示的に指定できる
+  - スパンの中で例外が起きると ERROR になる
+- スクリプトは QA エージェントを自前のスパンで包んで2回実行し (2回目は例外を起こす)、記録されたスパンとログレベルを一覧表示します
+
 # 全体的な注意事項
 
 - 本章は ch3 とのコード差分が 4 行のみのため、本書とリポジトリの間で混乱が起きにくい章です。

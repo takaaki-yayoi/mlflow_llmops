@@ -59,6 +59,8 @@ make all
 | `make feedback` | 8.3 | ユーザーフィードバックの記録と検索 |
 | `make eval` | 8.3-8.4 | LLM-as-a-Judgeによる品質評価パイプライン |
 | `make otel` | 8.5 | OpenTelemetry連携の設定確認 |
+| `make cost-builtin` | 8.2 の補足 | 組み込みのコスト `trace.info.cost` (MLflow 3.10以降) |
+| `make otel-semconv` | 8.5 の補足 | OTel GenAIセマンティック規約でのエクスポート (MLflow 3.11以降) |
 
 ## ファイル構成
 

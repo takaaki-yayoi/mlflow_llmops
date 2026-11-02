@@ -139,6 +139,7 @@ make eval-all
 | `make register` | スコアラーをMLflowに登録 | 5.4.7 |
 | `make eval` | 自動評価の実行（メインスクリプト） | 5.5-5.6 |
 | `make sim` | 会話シミュレーション | 5.7 |
+| `make test-regression` | 補足: `@mlflow.test` で評価をpytestのテストとして実行 (MLflow 3.14以降) | - |
 | `make eval-all` | vibe-check → eval を順番に実行 | - |
 | `make cli` | CLIエージェントを起動 | - |
 | `make clean` | 生成されたファイルを削除 | - |
